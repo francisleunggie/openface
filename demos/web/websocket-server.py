@@ -292,8 +292,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
                 # if self.training:
                 if identity == -1:
 					identity = len(identities)
+					identities.append(identity)
                     self.images[phash] = Face(rep, identity)
-					self.people.append(str(time.time()));
+					self.people.append(str(time.time()))
                     # TODO: Transferring as a string is suboptimal.
                     # content = [str(x) for x in cv2.resize(alignedFace, (0,0),
                     # fx=0.5, fy=0.5).flatten()]
