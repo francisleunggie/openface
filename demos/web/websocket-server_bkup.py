@@ -39,7 +39,6 @@ import os
 import StringIO
 import urllib
 import base64
-import time
 
 from sklearn.decomposition import PCA
 from sklearn.grid_search import GridSearchCV
@@ -289,11 +288,8 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
             else:
                 rep = net.forward(alignedFace)
                 # print(rep)
-                # if self.training:
-                if identity == -1:
-					identity = len(identities)
+                if self.training:
                     self.images[phash] = Face(rep, identity)
-					self.people.append(str(time.time()));
                     # TODO: Transferring as a string is suboptimal.
                     # content = [str(x) for x in cv2.resize(alignedFace, (0,0),
                     # fx=0.5, fy=0.5).flatten()]
