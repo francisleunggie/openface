@@ -294,7 +294,14 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					identity = len(identities)
 					identities.append(identity)
 					self.images[phash] = Face(rep, identity)
-					self.people.append(str(time.time()))
+					newPerson = str(time.time())
+					self.people.append(newPerson)
+					msg = {
+						"type": "NEW_PERSON",
+						"hash": phash,
+						"identities": identities,
+						"newPerson": newPerson
+					}
 					# TODO: Transferring as a string is suboptimal.
 					# content = [str(x) for x in cv2.resize(alignedFace, (0,0),
 					# fx=0.5, fy=0.5).flatten()]
