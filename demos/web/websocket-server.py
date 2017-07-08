@@ -236,9 +236,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		else:
 			(X, y) = d
 			numIdentities = len(set(y + [-1]))
-			print("d = {}, numIdentities = {}".format(d, numIdentities))
-			if numIdentities <= 1:
-				return
+			#print("d = {}, numIdentities = {}".format(d, numIdentities))
+			#if numIdentities <= 1:
+			#	return
 
 			param_grid = [
 				{'C': [1, 10, 100, 1000],
