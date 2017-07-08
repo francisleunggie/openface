@@ -296,6 +296,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					self.images[phash] = Face(rep, identity)
 					newPerson = str(time.time())
 					self.people.append(newPerson)
+					self.trainSVM()
 					msg = {
 						"type": "NEW_PERSON",
 						"hash": phash,
@@ -316,7 +317,6 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					}
 					self.sendMessage(json.dumps(msg))
 				else:
-					self.trainSVM()
 					if len(self.people) == 0:
 						identity = -1
 					elif len(self.people) == 1:
