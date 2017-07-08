@@ -311,8 +311,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 						if numIdentities == 1:
 							singleton = self.images[self.images.keys()[0]]
 							rep1 = singleton.rep
-							print("rep = {}, rep1 = {}".format(rep, rep1))
-							diff = abs(rep - rep1)
+							diff = rep - rep1
+							diff = np.dot(diff, diff)
+							print("rep - rep1 = {}".format(diff))
 							if diff <= 0.5:
 								identity = singleton.identity
 					if identity == -1:
