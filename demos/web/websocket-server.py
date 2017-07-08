@@ -313,7 +313,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 							rep1 = singleton.rep
 							diff = rep - rep1
 							diff = np.dot(diff, diff)
-							print("rep - rep1 = {}".format(diff))
+							print("diff = {}".format(diff))
 							if diff <= 0.5:
 								identity = singleton.identity
 					if identity == -1:
@@ -322,6 +322,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 						self.images[phash] = Face(rep, identity)
 						newPerson = str(time.time()) + str(i)
 						self.people.append(newPerson)
+						print("new identity = {}, new person = {}".format(identity, newPerson))
 						self.trainSVM()
 						msg = {
 							"type": "NEW_PERSON",
