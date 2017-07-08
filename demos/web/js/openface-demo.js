@@ -70,7 +70,7 @@ function sendFrameLoop() {
 		var msg = {
 			'type': 'FRAME',
 			'dataURL': dataURL,
-			'identity': defaultPerson
+			'identity': -1//defaultPerson
 		};
 		socket.send(JSON.stringify(msg));
 		tok--;
