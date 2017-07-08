@@ -316,6 +316,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					}
 					self.sendMessage(json.dumps(msg))
 				else:
+					self.trainSVM()
 					if len(self.people) == 0:
 						identity = -1
 					elif len(self.people) == 1:
