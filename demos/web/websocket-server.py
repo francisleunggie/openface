@@ -237,8 +237,8 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			(X, y) = d
 			numIdentities = len(set(y + [-1]))
 			#print("d = {}, numIdentities = {}".format(d, numIdentities))
-			#if numIdentities <= 1:
-			#	return
+			if numIdentities <= 1:
+				return
 
 			param_grid = [
 				{'C': [1, 10, 100, 1000],
@@ -297,7 +297,6 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				if identity == -1:
 					if self.svm is None:
 						self.trainSVM()
-						print(self.svm)
 					if self.svm:
 						print("predicting")
 						identity = self.svm.predict(rep)[0]
