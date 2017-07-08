@@ -300,7 +300,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					if self.svm:
 						print("predicting")
 						identity = self.svm.predict(rep)[0]
-					else
+					else:
 						X = []
 						y = []
 						for img in self.images.values():
