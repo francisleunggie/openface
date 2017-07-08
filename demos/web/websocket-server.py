@@ -274,8 +274,10 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		bbs = align.getAllFaceBoundingBoxes(rgbFrame)
 		#bb = align.getLargestFaceBoundingBox(rgbFrame)
 		#bbs = [bb] if bb is not None else []
+		i = 0
 		for bb in bbs:
 			# print(len(bbs))
+			i = i + 1
 			landmarks = align.findLandmarks(rgbFrame, bb)
 			alignedFace = align.align(args.imgDim, rgbFrame, bb,
 									  landmarks=landmarks,
@@ -294,7 +296,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					identity = len(identities)
 					identities.append(identity)
 					self.images[phash] = Face(rep, identity)
-					newPerson = str(time.time())
+					newPerson = str(time.time()) + str(i)
 					self.people.append(newPerson)
 					self.trainSVM()
 					msg = {
