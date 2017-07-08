@@ -176,6 +176,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 
 		numIdentities = len(set(y + [-1])) - 1
 		if numIdentities == 0:
+			print("numIdentities = {}".format(numIdentities))
 			return None
 
 		if args.unknown:
