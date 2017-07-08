@@ -192,6 +192,7 @@ function createSocket(address, name) {
 			});
 			redrawPeople();
 		} else if (j.type == "NEW_PERSON") {
+			alert(j.type);
 			addPerson(j.newPerson);
 			addPersonToDropDown(j);
 		} else if (j.type == "IDENTITIES") {
@@ -257,6 +258,7 @@ function addPerson(newPerson) {
 }
 
 function addPersonToDropDown(j) {
+	alert(j.identities);
 	var h = "Last updated: " + (new Date()).toTimeString();
 	h += "<ul>";
 	var len = j.identities.length
