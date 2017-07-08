@@ -297,7 +297,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				continue
 
 			phash = str(imagehash.phash(Image.fromarray(alignedFace)))
-			numIdentities = getNumIdentities()
+			numIdentities = self.getNumIdentities()
 			# print("phash = {}, self.images = {}".format(phash, self.images))
 			if phash in self.images:
 				identity = self.images[phash].identity
