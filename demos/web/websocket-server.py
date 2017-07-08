@@ -322,6 +322,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					elif len(self.people) == 1:
 						identity = 0
 					elif self.svm:
+						print("predicting")
 						identity = self.svm.predict(rep)[0]
 					else:
 						print("hhh")
