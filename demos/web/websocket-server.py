@@ -295,11 +295,25 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				# print(rep)
 				# if self.training:
 				if identity == -1:
-					if self.svm is None:
-						self.trainSVM()
+					#if self.svm is None:
+					#	self.trainSVM()
 					if self.svm:
 						print("predicting")
 						identity = self.svm.predict(rep)[0]
+					else
+						X = []
+						y = []
+						for img in self.images.values():
+							X.append(img.rep)
+							y.append(img.identity)
+
+						numIdentities = len(set(y + [-1])) - 1
+						if numIdentities == 1:
+							singleton = self.images[self.images.keys[0]]
+							rep1 = singleton.rep
+							diff = abs(rep - rep1)
+							if diff <= 0.5:
+								identity = singleton.identity
 					if identity == -1:
 						identity = len(identities)
 						identities.append(identity)
