@@ -313,6 +313,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 						identity = self.svm.predict(rep)[0]
 					else:
 						if numIdentities == 1:
+							# change to looping the whole images arr
 							singleton = self.images[self.images.keys()[0]]
 							rep1 = singleton.rep
 							diff = rep - rep1
@@ -320,6 +321,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 							print("diff = {}".format(diff))
 							if diff <= 0.5:
 								identity = singleton.identity
+								self.images[phash] = Face(rep, identity)
 					if identity == -1:
 						identity = numIdentities
 						identities.append(identity)
