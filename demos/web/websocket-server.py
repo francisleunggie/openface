@@ -237,6 +237,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			(X, y) = d
 			numIdentities = len(set(y + [-1]))
 			print("numIdentities = {}".format(numIdentities))
+			print("x = {}, y = {}".format(len(X),len(y)))
 			if numIdentities <= 1:
 				return
 
