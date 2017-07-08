@@ -295,6 +295,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				# if self.training:
 				if identity == -1:
 					if self.svm is None:
+						print("start svm")
 						self.trainSVM()
 					print("predicting")
 					identity = self.svm.predict(rep)[0]
