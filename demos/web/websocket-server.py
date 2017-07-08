@@ -248,7 +248,17 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				 'kernel': ['rbf']}
 			]
 			self.svm = GridSearchCV(SVC(C=1), param_grid, cv=5).fit(X, y)
+	
+	def getNumIdentities(self):
+		X = []
+		y = []
+		for img in self.images.values():
+			X.append(img.rep)
+			y.append(img.identity)
 
+		numIdentities = len(set(y + [-1])) - 1
+		return numIdentities
+	
 	def processFrame(self, dataURL, identity):
 		head = "data:image/jpeg;base64,"
 		assert(dataURL.startswith(head))
@@ -287,6 +297,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				continue
 
 			phash = str(imagehash.phash(Image.fromarray(alignedFace)))
+			numIdentities = getNumIdentities()
 			# print("phash = {}, self.images = {}".format(phash, self.images))
 			if phash in self.images:
 				identity = self.images[phash].identity
@@ -301,13 +312,6 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 						print("predicting")
 						identity = self.svm.predict(rep)[0]
 					else:
-						X = []
-						y = []
-						for img in self.images.values():
-							X.append(img.rep)
-							y.append(img.identity)
-
-						numIdentities = len(set(y + [-1])) - 1
 						if numIdentities == 1:
 							singleton = self.images[self.images.keys()[0]]
 							rep1 = singleton.rep
@@ -317,7 +321,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 							if diff <= 0.5:
 								identity = singleton.identity
 					if identity == -1:
-						identity = len(identities)
+						identity = numIdentities
 						identities.append(identity)
 						self.images[phash] = Face(rep, identity)
 						newPerson = str(time.time()) + str(i)
