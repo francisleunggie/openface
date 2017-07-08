@@ -231,12 +231,12 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		print("+ Training SVM on {} labeled images.".format(len(self.images)))
 		d = self.getData()
 		if d is None:
-			print("d = {}".format(d))
 			self.svm = None
 			return
 		else:
 			(X, y) = d
 			numIdentities = len(set(y + [-1]))
+			print("d = {}, numIdentities = {}".format(d, numIdentities))
 			if numIdentities <= 1:
 				return
 
