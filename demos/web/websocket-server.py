@@ -294,31 +294,35 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				# print(rep)
 				# if self.training:
 				if identity == -1:
-					identity = len(identities)
-					identities.append(identity)
-					self.images[phash] = Face(rep, identity)
-					newPerson = str(time.time()) + str(i)
-					self.people.append(newPerson)
-					self.trainSVM()
-					msg = {
-						"type": "NEW_PERSON",
-						"hash": phash,
-						"identities": identities,
-						"newPerson": newPerson
-					}
-					self.sendMessage(json.dumps(msg))
-					# TODO: Transferring as a string is suboptimal.
-					# content = [str(x) for x in cv2.resize(alignedFace, (0,0),
-					# fx=0.5, fy=0.5).flatten()]
-					content = [str(x) for x in alignedFace.flatten()]
-					msg = {
-						"type": "NEW_IMAGE",
-						"hash": phash,
-						"content": content,
-						"identity": identity,
-						"representation": rep.tolist()
-					}
-					self.sendMessage(json.dumps(msg))
+					if self.svm:
+						print("predicting")
+						identity = self.svm.predict(rep)[0]
+					if identity == -1:
+						identity = len(identities)
+						identities.append(identity)
+						self.images[phash] = Face(rep, identity)
+						newPerson = str(time.time()) + str(i)
+						self.people.append(newPerson)
+						self.trainSVM()
+						msg = {
+							"type": "NEW_PERSON",
+							"hash": phash,
+							"identities": identities,
+							"newPerson": newPerson
+						}
+						self.sendMessage(json.dumps(msg))
+						# TODO: Transferring as a string is suboptimal.
+						# content = [str(x) for x in cv2.resize(alignedFace, (0,0),
+						# fx=0.5, fy=0.5).flatten()]
+						content = [str(x) for x in alignedFace.flatten()]
+						msg = {
+							"type": "NEW_IMAGE",
+							"hash": phash,
+							"content": content,
+							"identity": identity,
+							"representation": rep.tolist()
+						}
+						self.sendMessage(json.dumps(msg))
 				else:
 					if len(self.people) == 0:
 						identity = -1
