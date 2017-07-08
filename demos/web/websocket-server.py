@@ -319,7 +319,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 							diff = rep - rep1
 							diff = np.dot(diff, diff)
 							print("diff = {}".format(diff))
-							if diff <= 0.5:
+							if diff <= 0.7:
 								identity = singleton.identity
 								self.images[phash] = Face(rep, identity)
 					if identity == -1:
