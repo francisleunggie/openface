@@ -302,6 +302,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 						"identities": identities,
 						"newPerson": newPerson
 					}
+					self.sendMessage(json.dumps(msg))
 					# TODO: Transferring as a string is suboptimal.
 					# content = [str(x) for x in cv2.resize(alignedFace, (0,0),
 					# fx=0.5, fy=0.5).flatten()]
