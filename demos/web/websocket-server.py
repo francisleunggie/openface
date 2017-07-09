@@ -55,7 +55,7 @@ import matplotlib.cm as cm
 
 import openface
 
-r = None
+r = redis.StrictRedis(host='localhost', port=6379, db=0)
 modelDir = os.path.join(fileDir, '..', '..', 'models')
 dlibModelDir = os.path.join(modelDir, 'dlib')
 openfaceModelDir = os.path.join(modelDir, 'openface')
@@ -98,8 +98,7 @@ class Face:
 
 class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def __init__(self):
-		super(OpenFaceServerProtocol, self).__init__()
-		r = redis.StrictRedis(host='localhost', port=6379, db=0)
+		super(OpenFaceServerProtocol, self).__init__()		
 		self.images = {}
 		self.training = True
 		self.people = []
