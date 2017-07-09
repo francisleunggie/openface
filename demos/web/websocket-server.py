@@ -283,6 +283,12 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			self.images[phash] = Face(rep, identity)
 		print("comparison result: identity is {}, min is {}".format(identity, min))
 		return identity
+		
+	def tryTrain(self):
+		try:
+			self.trainSVM()
+		except Exception as e:
+			print "Error: {}".format(str(e))
 	
 	def processFrame(self, dataURL, identity):
 		head = "data:image/jpeg;base64,"
@@ -333,16 +339,19 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				if identity == -1:
 					#if self.svm is None:
 					#	self.trainSVM()
-					if self.svm and numIdentities >= 5:
+					if self.svm:
 						print("predicting")
 						try:
 							identity = self.svm.predict(rep)[0]
 							print("prediction result: identity is {}".format(identity))
+							self.tryTrain()
 						except:							
 							identity = self.comparison(identity, phash, rep)
+							self.tryTrain()
 					else:
 						if numIdentities >= 1:
 							identity = self.comparison(identity, phash, rep)
+							self.tryTrain()
 					if identity == -1:
 						identity = numIdentities
 						identities.append(identity)
@@ -350,10 +359,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 						newPerson = str(time.time()) + str(i)
 						self.people.append(newPerson)
 						print("new identity = {}, new person = {}".format(identity, newPerson))
-						try:
-							self.trainSVM()
-						except Exception as e:
-							print "Error: {}".format(str(e))
+						self.tryTrain()						
 						msg = {
 							"type": "NEW_PERSON",
 							"hash": phash,
