@@ -101,7 +101,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		super(OpenFaceServerProtocol, self).__init__()		
 		self.images = {}
 		self.training = True
-		self.people = getUniqueIdentities()
+		self.people = self.getUniqueIdentities()
 		self.svm = None
 		if args.unknown:
 			self.unknownImgs = np.load("./examples/web/unknown.npy")
