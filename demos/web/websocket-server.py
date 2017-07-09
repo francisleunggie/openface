@@ -260,6 +260,29 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		numIdentities = len(set(y + [-1])) - 1
 		return numIdentities
 	
+	def comparison(self, identity, phash, rep):
+		comparison = {}
+		# change to looping the whole images arr
+		for hash, face in self.images.iteritems():
+			rep1 = face.rep
+			diff = rep - rep1
+			diff = np.dot(diff, diff)
+			if comparison[face.identity] is None:
+				comparison[face.identity] = { "diff": diff, "denom": 1}
+			else: 
+				comparison[face.identity].diff += diff
+				comparison[face.identity].denom += 1
+		min = 0.71							
+		for id, calc in comparison.iteritems():
+			avgDiff = calc.diff / calc.denom
+			if avgDiff < min:
+				min = avgDiff
+				identity = id
+			
+		if identity > -1:
+			self.images[phash] = Face(rep, identity)
+		return identity
+	
 	def processFrame(self, dataURL, identity):
 		head = "data:image/jpeg;base64,"
 		assert(dataURL.startswith(head))
@@ -311,18 +334,13 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					#	self.trainSVM()
 					if self.svm:
 						print("predicting")
-						identity = self.svm.predict(rep)[0]
+						try:
+							identity = self.svm.predict(rep)[0]
+						except:							
+							identity = self.comparison(identity, phash, rep)
 					else:
-						if numIdentities == 1:
-							# change to looping the whole images arr
-							singleton = self.images[self.images.keys()[0]]
-							rep1 = singleton.rep
-							diff = rep - rep1
-							diff = np.dot(diff, diff)
-							print("diff = {}".format(diff))
-							if diff <= 0.7:
-								identity = singleton.identity
-								self.images[phash] = Face(rep, identity)
+						if numIdentities >= 1:
+							identity = self.comparison(identity, phash, rep)
 					if identity == -1:
 						identity = numIdentities
 						identities.append(identity)
@@ -330,7 +348,10 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 						newPerson = str(time.time()) + str(i)
 						self.people.append(newPerson)
 						print("new identity = {}, new person = {}".format(identity, newPerson))
-						self.trainSVM()
+						try:
+							self.trainSVM()
+						except Exception as e:
+							print "Error({0}): {1}".format(e.errno, e.strerror)
 						msg = {
 							"type": "NEW_PERSON",
 							"hash": phash,
