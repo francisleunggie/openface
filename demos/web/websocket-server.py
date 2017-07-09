@@ -101,7 +101,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		super(OpenFaceServerProtocol, self).__init__()		
 		self.images = {}
 		self.training = True
-		self.people = []
+		self.people = getUniqueIdentities()
 		self.svm = None
 		if args.unknown:
 			self.unknownImgs = np.load("./examples/web/unknown.npy")
@@ -180,6 +180,12 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			
 	def setI(self, key, val):
 		r.set(key, pickle.dumps(val))
+		
+	def getP(self, key):
+		r.get(key)
+	
+	def setP(self, key, val):
+		r.set(key, val)
 	
 	def getData(self):
 		X = []
@@ -278,6 +284,15 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 
 		numIdentities = len(set(y + [-1])) - 1
 		return numIdentities
+		
+	def getUniqueIdentities(self):
+		y = []
+		keys = r.keys('*')
+		for key in keys:
+			img = self.getI(key)
+			if img.identity not in y: 
+				y.append(img.identity)
+		return y
 	
 	def comparison(self, identity, phash, rep):
 		comparison = {}
