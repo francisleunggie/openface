@@ -284,7 +284,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		# change to looping the whole images arr
 		keys = r.keys('*')
 		for hash in keys:
-			face = self.getI(key)		
+			face = self.getI(hash)		
 			rep1 = face.rep
 			diff = rep - rep1
 			diff = np.dot(diff, diff)
