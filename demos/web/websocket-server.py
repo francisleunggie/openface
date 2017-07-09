@@ -289,6 +289,17 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			self.trainSVM()
 		except Exception as e:
 			print "Error: {}".format(str(e))
+			
+	def sendNewImage(self, phash, identity, rep, alignedFace):
+		content = [str(x) for x in alignedFace.flatten()]
+		msg = {
+			"type": "NEW_IMAGE",
+			"hash": phash,
+			"content": content,
+			"identity": identity,
+			"representation": rep.tolist()
+		}
+		self.sendMessage(json.dumps(msg))
 	
 	def processFrame(self, dataURL, identity):
 		head = "data:image/jpeg;base64,"
@@ -371,15 +382,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 						# TODO: Transferring as a string is suboptimal.
 						# content = [str(x) for x in cv2.resize(alignedFace, (0,0),
 						# fx=0.5, fy=0.5).flatten()]
-						content = [str(x) for x in alignedFace.flatten()]
-						msg = {
-							"type": "NEW_IMAGE",
-							"hash": phash,
-							"content": content,
-							"identity": identity,
-							"representation": rep.tolist()
-						}
-						self.sendMessage(json.dumps(msg))
+						self.sendNewImage(phash, identity, rep, alignedFace)
+					else:
+						self.sendNewImage(phash, identity, rep, alignedFace)
 				else:
 					if len(self.people) == 0:
 						identity = -1
