@@ -267,7 +267,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			rep1 = face.rep
 			diff = rep - rep1
 			diff = np.dot(diff, diff)
-			if comparison[face.identity] is None:
+			if face.identity in comparison:
 				comparison[face.identity] = { "diff": diff, "denom": 1}
 			else: 
 				comparison[face.identity].diff += diff
