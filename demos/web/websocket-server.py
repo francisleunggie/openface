@@ -272,7 +272,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			else: 
 				comparison[face.identity]["diff"] += diff
 				comparison[face.identity]["denom"] += 1
-		min = 0.71							
+		min = 0.8							
 		for id, calc in comparison.iteritems():
 			avgDiff = calc["diff"] / calc["denom"]
 			if avgDiff < min:
