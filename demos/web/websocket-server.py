@@ -281,6 +281,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			
 		if identity > -1:
 			self.images[phash] = Face(rep, identity)
+		print("comparison result: identity is {}, min is {}".format(identity, min))
 		return identity
 	
 	def processFrame(self, dataURL, identity):
@@ -306,9 +307,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		#	  return
 
 		identities = []
-		bbs = align.getAllFaceBoundingBoxes(rgbFrame)
-		#bb = align.getLargestFaceBoundingBox(rgbFrame)
-		#bbs = [bb] if bb is not None else []
+		#bbs = align.getAllFaceBoundingBoxes(rgbFrame)
+		bb = align.getLargestFaceBoundingBox(rgbFrame)
+		bbs = [bb] if bb is not None else []
 		i = 0
 		for bb in bbs:
 			# print(len(bbs))
@@ -332,10 +333,11 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				if identity == -1:
 					#if self.svm is None:
 					#	self.trainSVM()
-					if self.svm:
+					if self.svm and numIdentities >= 5:
 						print("predicting")
 						try:
 							identity = self.svm.predict(rep)[0]
+							print("prediction result: identity is {}".format(identity))
 						except:							
 							identity = self.comparison(identity, phash, rep)
 					else:
