@@ -174,7 +174,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 
 	def getI(self, key):
 		val = r.get(key)
-		print("self-images[{}] = {}".format(key, val))
+		#print("self-images[{}] = {}".format(key, val))
 		if val is not None:
 			return pickle.loads(val)
 			
