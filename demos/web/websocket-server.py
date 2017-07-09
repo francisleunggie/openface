@@ -351,7 +351,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 						try:
 							self.trainSVM()
 						except Exception as e:
-							print "Error({0}): {1}".format(e.errno, e.strerror)
+							print "Error: {}".format(e.strerror)
 						msg = {
 							"type": "NEW_PERSON",
 							"hash": phash,
