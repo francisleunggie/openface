@@ -40,6 +40,8 @@ import StringIO
 import urllib
 import base64
 import time
+import redis
+import pickle
 
 from sklearn.decomposition import PCA
 from sklearn.grid_search import GridSearchCV
@@ -53,6 +55,7 @@ import matplotlib.cm as cm
 
 import openface
 
+r = redis.StrictRedis(host='localhost', port=6379, db=0)
 modelDir = os.path.join(fileDir, '..', '..', 'models')
 dlibModelDir = os.path.join(modelDir, 'dlib')
 openfaceModelDir = os.path.join(modelDir, 'openface')
@@ -82,23 +85,25 @@ net = openface.TorchNeuralNet(args.networkModel, imgDim=args.imgDim,
 
 class Face:
 
-	def __init__(self, rep, identity):
+	def __init__(self, rep, identity, name):
 		self.rep = rep
 		self.identity = identity
+		self.name = name
 
 	def __repr__(self):
-		return "{{id: {}, rep[0:5]: {}}}".format(
+		return "{{id: {}, rep[0:5]: {}, name: {}}}".format(
 			str(self.identity),
-			self.rep[0:5]
+			self.rep[0:5], 
+			self.name
 		)
 
 
 class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def __init__(self):
-		super(OpenFaceServerProtocol, self).__init__()
+		super(OpenFaceServerProtocol, self).__init__()		
 		self.images = {}
 		self.training = True
-		self.people = []
+		self.people = self.getUniqueIdentities()
 		self.svm = None
 		if args.unknown:
 			self.unknownImgs = np.load("./examples/web/unknown.npy")
@@ -131,16 +136,18 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			print(self.people)
 		elif msg['type'] == "UPDATE_IDENTITY":
 			h = msg['hash'].encode('ascii', 'ignore')
-			if h in self.images:
-				self.images[h].identity = msg['idx']
+			selfImage = self.getI(h)
+			if selfImage is not None:
+				selfImage.identity = msg['idx']
 				if not self.training:
 					self.trainSVM()
 			else:
 				print("Image not found.")
 		elif msg['type'] == "REMOVE_IMAGE":
 			h = msg['hash'].encode('ascii', 'ignore')
-			if h in self.images:
-				del self.images[h]
+			selfImage = self.getI(h)
+			if selfImage is not None:
+				r.delete(h)
 				if not self.training:
 					self.trainSVM()
 			else:
@@ -158,8 +165,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 
 		for jsImage in jsImages:
 			h = jsImage['hash'].encode('ascii', 'ignore')
-			self.images[h] = Face(np.array(jsImage['representation']),
-								  jsImage['identity'])
+			self.setI(h, Face(np.array(jsImage['representation']),
+									jsImage['identity'],
+									jsPeople[jsImage['identity']].encode('ascii', 'ignore')))
 
 		for jsPerson in jsPeople:
 			self.people.append(jsPerson.encode('ascii', 'ignore'))
@@ -167,10 +175,27 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		if not training:
 			self.trainSVM()
 
+	def getI(self, key):
+		val = r.get(key)
+		#print("self-images[{}] = {}".format(key, val))
+		if val is not None:
+			return pickle.loads(val)
+			
+	def setI(self, key, val):
+		r.set(key, pickle.dumps(val))
+		
+	def getP(self, key):
+		r.get(key)
+	
+	def setP(self, key, val):
+		r.set(key, val)
+	
 	def getData(self):
 		X = []
 		y = []
-		for img in self.images.values():
+		keys = r.keys('*')
+		for key in keys:
+			img = self.getI(key)
 			X.append(img.rep)
 			y.append(img.identity)
 
@@ -228,7 +253,8 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		self.sendMessage(json.dumps(msg))
 
 	def trainSVM(self):
-		print("+ Training SVM on {} labeled images.".format(len(self.images)))
+		#print("+ Training SVM on {} labeled images.".format(len(self.images)))
+		print("+ Training SVM on labeled images.")
 		d = self.getData()
 		if d is None:
 			self.svm = None
@@ -253,17 +279,31 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def getNumIdentities(self):
 		X = []
 		y = []
-		for img in self.images.values():
+		keys = r.keys('*')
+		for key in keys:
+			img = self.getI(key)
 			X.append(img.rep)
 			y.append(img.identity)
 
 		numIdentities = len(set(y + [-1])) - 1
 		return numIdentities
+		
+	def getUniqueIdentities(self):
+		numIdentities = self.getNumIdentities()
+		y = ["" for x in range(numIdentities)]
+		keys = r.keys('*')
+		for key in keys:
+			img = self.getI(key)
+			if img.name not in y: 
+				y[img.identity] = img.name
+		return y
 	
 	def comparison(self, identity, phash, rep):
 		comparison = {}
 		# change to looping the whole images arr
-		for hash, face in self.images.iteritems():
+		keys = r.keys('*')
+		for hash in keys:
+			face = self.getI(hash)		
 			rep1 = face.rep
 			diff = rep - rep1
 			diff = np.dot(diff, diff)
@@ -282,7 +322,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				identity = id
 			
 		if identity > -1:
-			self.images[phash] = Face(rep, identity)
+			self.setI(phash, Face(rep, identity, self.people[identity]))
 		print("comparison result: identity is {}, min is {}".format(identity, min))
 		return identity
 		
@@ -342,9 +382,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 
 			phash = str(imagehash.phash(Image.fromarray(alignedFace)))
 			numIdentities = self.getNumIdentities()
-			# print("phash = {}, self.images = {}".format(phash, self.images))
-			if phash in self.images:
-				identity = self.images[phash].identity
+			pastImage = self.getI(phash)
+			if pastImage is not None:
+				identity = pastImage.identity
 			else:
 				rep = net.forward(alignedFace)
 				# print(rep)
@@ -367,9 +407,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					if identity == -1:
 						identity = numIdentities
 						identities.append(identity)
-						self.images[phash] = Face(rep, identity)
 						newPerson = str(time.time()) + str(i)
 						self.people.append(newPerson)
+						self.setI(phash, Face(rep, identity, newPerson))
 						print("new identity = {}, new person = {}".format(identity, newPerson))
 						self.tryTrain()						
 						msg = {
