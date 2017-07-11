@@ -143,11 +143,12 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def onConnect(self, request):
 		print("Client connecting: {0}".format(request.peer))
 		self.training = True
+		self.justConnected = True
 		
 
 	def onOpen(self):
 		print("WebSocket connection open.")
-		#self.sendPeople(people)
+		
 
 	def onMessage(self, payload, isBinary):
 		raw = payload.decode('utf8')
@@ -159,6 +160,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		elif msg['type'] == "NULL":
 			self.sendMessage('{"type": "NULL"}')
 		elif msg['type'] == "FRAME":
+			if self.justConnected:
+				self.sendPeople(people)
+				self.justConnected = False
 			self.processFrame(msg['dataURL'], msg['identity'])
 			self.sendMessage('{"type": "PROCESSED"}')
 		elif msg['type'] == "TRAINING":
