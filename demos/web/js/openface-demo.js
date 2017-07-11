@@ -296,7 +296,6 @@ function setPeople(j) {
 				h += "<li>" + identity + "</li>";
 			}
 		}
-		//alert(JSON.stringify(people));
 	} else {
 		h += "<li>Nobody detected.</li>";
 	}

@@ -129,7 +129,8 @@ def getUniqueIdentities():
 	keys = r.keys('*')
 	for key in keys:
 		img = getI(key)
-		print("saved face is {}".format(img))
+		#print("saved face is {}".format(img))
+		print(img.__dict__)
 		if img.name not in y: 
 			y[img.identity] = img.name
 	return y
