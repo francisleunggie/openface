@@ -83,14 +83,15 @@ align = openface.AlignDlib(args.dlibFacePredictor)
 net = openface.TorchNeuralNet(args.networkModel, imgDim=args.imgDim,
 							  cuda=args.cuda)
 
-def getI(self, key):
+def getI(key):
 	val = r.get(key)
 	#print("self-images[{}] = {}".format(key, val))
 	if val is not None:
 		return pickle.loads(val)
 		
-def setI(self, key, val):
-	r.set(key, pickle.dumps(val))							  
+def setI(key, val):
+	r.set(key, pickle.dumps(val))			
+	
 def getNumIdentities():
 	X = []
 	y = []
