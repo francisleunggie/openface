@@ -284,17 +284,17 @@ function addPersonToDropDown(j) {
 
 function setPeople(j) {
 	//alert(j.identities);
-	people = j.people
-	
+	people = []
 	var h = "Last updated: " + (new Date()).toTimeString();
 	h += "<ul>";
 	var len = j.people.length
 	if (len > 0) {
 		for (var i = 0; i < len; i++) {
-			
-			identity = people[idIdx];
-			
-			h += "<li>" + identity + "</li>";
+			identity = j.people[i];
+			if (people.indexOf(identity) === -1) {
+				people.append(identity);
+				h += "<li>" + identity + "</li>";
+			}
 		}
 	} else {
 		h += "<li>Nobody detected.</li>";
