@@ -111,7 +111,7 @@ def getI(key):
 		
 def setI(key, val):
 	#r.set(key, pickle.dumps(val))			
-	r.set(key, json.dump(val.__dict__))			
+	r.set(key, json.dumps(val.__dict__))			
 	
 def getNumIdentities():
 	X = []
