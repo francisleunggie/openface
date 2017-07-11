@@ -292,11 +292,11 @@ function setPeople(j) {
 		for (var i = 0; i < len; i++) {
 			identity = j.people[i];
 			if (people.indexOf(identity) === -1) {
-				people.append(identity);
+				people.push(identity);
 				h += "<li>" + identity + "</li>";
 			}
 		}
-		alert(JSON.stringify(people));
+		//alert(JSON.stringify(people));
 	} else {
 		h += "<li>Nobody detected.</li>";
 	}
