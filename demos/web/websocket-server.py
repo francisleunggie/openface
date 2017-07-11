@@ -128,13 +128,6 @@ def getUniqueIdentities():
 			y[img.identity] = img.name
 	return y
 	
-def sendPeople(people):
-	msg = {
-		"type": "PEOPLE",
-		"people": people
-	}
-	self.sendMessage(json.dumps(msg))
-
 people = getUniqueIdentities()	
 
 
@@ -150,7 +143,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def onConnect(self, request):
 		print("Client connecting: {0}".format(request.peer))
 		self.training = True
-		sendPeople(people)
+		self.sendPeople(people)
 
 	def onOpen(self):
 		print("WebSocket connection open.")
@@ -346,6 +339,13 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			"content": content,
 			"identity": identity,
 			"representation": rep.tolist()
+		}
+		self.sendMessage(json.dumps(msg))
+		
+	def sendPeople(people):
+		msg = {
+			"type": "PEOPLE",
+			"people": people
 		}
 		self.sendMessage(json.dumps(msg))
 	
