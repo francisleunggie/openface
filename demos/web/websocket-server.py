@@ -143,10 +143,11 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def onConnect(self, request):
 		print("Client connecting: {0}".format(request.peer))
 		self.training = True
-		self.sendPeople(people)
+		
 
 	def onOpen(self):
 		print("WebSocket connection open.")
+		self.sendPeople(people)
 
 	def onMessage(self, payload, isBinary):
 		raw = payload.decode('utf8')
