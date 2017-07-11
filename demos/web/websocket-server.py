@@ -147,7 +147,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 
 	def onOpen(self):
 		print("WebSocket connection open.")
-		self.sendPeople(people)
+		#self.sendPeople(people)
 
 	def onMessage(self, payload, isBinary):
 		raw = payload.decode('utf8')
