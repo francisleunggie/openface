@@ -82,7 +82,21 @@ args = parser.parse_args()
 align = openface.AlignDlib(args.dlibFacePredictor)
 net = openface.TorchNeuralNet(args.networkModel, imgDim=args.imgDim,
 							  cuda=args.cuda)
+							  
+class Face:
 
+	def __init__(self, rep, identity, name):
+		self.rep = rep
+		self.identity = identity
+		self.name = name
+
+	def __repr__(self):
+		return "{{id: {}, rep[0:5]: {}, name: {}}}".format(
+			str(self.identity),
+			self.rep[0:5], 
+			self.name
+		)
+							  
 def getI(key):
 	val = r.get(key)
 	#print("self-images[{}] = {}".format(key, val))
@@ -122,20 +136,6 @@ def sendIdentities(identities):
 	self.sendMessage(json.dumps(msg))
 
 people = getUniqueIdentities()	
-
-class Face:
-
-	def __init__(self, rep, identity, name):
-		self.rep = rep
-		self.identity = identity
-		self.name = name
-
-	def __repr__(self):
-		return "{{id: {}, rep[0:5]: {}, name: {}}}".format(
-			str(self.identity),
-			self.rep[0:5], 
-			self.name
-		)
 
 
 class OpenFaceServerProtocol(WebSocketServerProtocol):
