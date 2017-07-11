@@ -108,10 +108,11 @@ class Face:
 		j["rep"] = repJ
 		return json.dumps(j)
 		
-	def load(self, j):
+	@classmethod
+	def load(cls, j):
 		j = json.loads(j)
 		j["rep"] = np.array(j["rep"])
-		return Face.loads(j)
+		return Face(j["rep"], j["identity"], j["name"], j["cameraIP"], j["timestamp"])
 							  
 def getI(key):
 	val = r.get(key)
@@ -121,7 +122,7 @@ def getI(key):
 		
 def setI(key, val):
 	#r.set(key, pickle.dumps(val))			
-	r.set(key, Face.dump())			
+	r.set(key, val.dump())			
 	
 def getNumIdentities():
 	X = []
@@ -162,7 +163,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def onConnect(self, request):
 		print("Client connecting: {0}".format(request.peer))
 		self.training = True
-		#self.cameraID = str(request.peer)
+		#self.cameraIP = str(request.peer)
 		
 
 	def onOpen(self):
@@ -215,7 +216,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def onClose(self, wasClean, code, reason):
 		print("WebSocket connection closed: {0}".format(reason))
 
-	def loadState(self, jsImages, training, jsPeople, jsCameraID):
+	def loadState(self, jsImages, training, jsPeople, jscameraIP):
 		self.training = training
 
 		for jsImage in jsImages:
@@ -223,7 +224,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			setI(h, Face(np.array(jsImage['representation']),
 									jsImage['identity'],
 									jsPeople[jsImage['identity']].encode('ascii', 'ignore'),
-									jsCameraID,
+									jscameraIP,
 									str(time.time())))
 
 		for jsPerson in jsPeople:
@@ -321,7 +322,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		
 	
 	
-	def comparison(self, identity, phash, rep, cameraID, timestamp):
+	def comparison(self, identity, phash, rep, cameraIP, timestamp):
 		comparison = {}
 		# change to looping the whole images arr
 		keys = r.keys('*')
@@ -345,7 +346,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				identity = id
 			
 		if identity > -1:
-			setI(phash, Face(rep, identity, people[identity], cameraID, timestamp))
+			setI(phash, Face(rep, identity, people[identity], cameraIP, timestamp))
 		print("comparison result: identity is {}, min is {}".format(identity, min))
 		return identity
 		
@@ -373,7 +374,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		}
 		self.sendMessage(json.dumps(msg))
 	
-	def processFrame(self, dataURL, identity, cameraID, timestamp):
+	def processFrame(self, dataURL, identity, cameraIP, timestamp):
 		head = "data:image/jpeg;base64,"
 		assert(dataURL.startswith(head))
 		imgdata = base64.b64decode(dataURL[len(head):])
@@ -428,18 +429,18 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 							print("prediction result: identity is {}".format(identity))
 							self.tryTrain()
 						except:							
-							identity = self.comparison(identity, phash, rep, cameraID, timestamp)
+							identity = self.comparison(identity, phash, rep, cameraIP, timestamp)
 							self.tryTrain()
 					else:
 						if numIdentities >= 1:
-							identity = self.comparison(identity, phash, rep, cameraID, timestamp)
+							identity = self.comparison(identity, phash, rep, cameraIP, timestamp)
 							self.tryTrain()
 					if identity == -1:
 						identity = numIdentities
 						identities.append(identity)
 						newPerson = str(time.time()) + str(i)
 						people.append(newPerson)
-						setI(phash, Face(rep, identity, newPerson, cameraID, timestamp))
+						setI(phash, Face(rep, identity, newPerson, cameraIP, timestamp))
 						print("new identity = {}, new person = {}".format(identity, newPerson))
 						self.tryTrain()						
 						msg = {
