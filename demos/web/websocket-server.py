@@ -386,7 +386,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				continue
 
 			phash = str(imagehash.phash(Image.fromarray(alignedFace)))
-			numIdentities = self.getNumIdentities()
+			numIdentities = getNumIdentities()
 			pastImage = getI(phash)
 			if pastImage is not None:
 				identity = pastImage.identity
