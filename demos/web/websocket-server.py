@@ -163,7 +163,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		print("Received {} message of length {}.".format(
 			msg['type'], len(raw)))
 		if msg['type'] == "ALL_STATE":
-			self.loadState(msg['images'], msg['training'], msg['people'])
+			self.loadState(msg['images'], msg['training'], msg['people'], msg['cameraIP'])
 		elif msg['type'] == "NULL":
 			self.sendMessage('{"type": "NULL"}')
 		elif msg['type'] == "FRAME":
@@ -202,7 +202,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def onClose(self, wasClean, code, reason):
 		print("WebSocket connection closed: {0}".format(reason))
 
-	def loadState(self, jsImages, training, jsPeople):
+	def loadState(self, jsImages, training, jsPeople, jsCameraID):
 		self.training = training
 
 		for jsImage in jsImages:
@@ -210,7 +210,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			setI(h, Face(np.array(jsImage['representation']),
 									jsImage['identity'],
 									jsPeople[jsImage['identity']].encode('ascii', 'ignore'),
-									jsImage['cameraIP'],
+									jsCameraID,
 									str(time.time())))
 
 		for jsPerson in jsPeople:
