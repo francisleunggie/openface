@@ -101,17 +101,27 @@ class Face:
 			self.cameraIP,
 			datetime.datetime.fromtimestamp(float(self.timestamp)).strftime('%Y-%m-%d %H:%M:%S')
 		)
+		
+	def dump(self):
+		repJ = self.rep.tolist()
+		j = self.__dict__
+		j["rep"] = repJ
+		return json.dumps(j)
+		
+	def load(self, j):
+		j = json.loads(j)
+		j["rep"] = np.array(j["rep"])
+		return Face.loads(j)
 							  
 def getI(key):
 	val = r.get(key)
 	#print("self-images[{}] = {}".format(key, val))
 	if val is not None:
-		val = json.loads(val)
-		return Face.loads(val)
+		return Face.load(val)
 		
 def setI(key, val):
 	#r.set(key, pickle.dumps(val))			
-	r.set(key, json.dumps(val.__dict__))			
+	r.set(key, Face.dump())			
 	
 def getNumIdentities():
 	X = []
