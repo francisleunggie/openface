@@ -56,6 +56,7 @@ import matplotlib.cm as cm
 import openface
 
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
+people = getUniqueIdentities()
 modelDir = os.path.join(fileDir, '..', '..', 'models')
 dlibModelDir = os.path.join(modelDir, 'dlib')
 openfaceModelDir = os.path.join(modelDir, 'openface')
@@ -82,6 +83,42 @@ align = openface.AlignDlib(args.dlibFacePredictor)
 net = openface.TorchNeuralNet(args.networkModel, imgDim=args.imgDim,
 							  cuda=args.cuda)
 
+def getI(self, key):
+	val = r.get(key)
+	#print("self-images[{}] = {}".format(key, val))
+	if val is not None:
+		return pickle.loads(val)
+		
+def setI(self, key, val):
+	r.set(key, pickle.dumps(val))							  
+def getNumIdentities():
+	X = []
+	y = []
+	keys = r.keys('*')
+	for key in keys:
+		img = getI(key)
+		X.append(img.rep)
+		y.append(img.identity)
+
+	numIdentities = len(set(y + [-1])) - 1
+	return numIdentities
+		
+def getUniqueIdentities():
+	numIdentities = getNumIdentities()
+	y = ["" for x in range(numIdentities)]
+	keys = r.keys('*')
+	for key in keys:
+		img = getI(key)
+		if img.name not in y: 
+			y[img.identity] = img.name
+	return y
+	
+def sendIdentities(identities):
+	msg = {
+		"type": "IDENTITIES",
+		"identities": identities
+	}
+	self.sendMessage(json.dumps(msg))
 
 class Face:
 
@@ -103,7 +140,6 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		super(OpenFaceServerProtocol, self).__init__()		
 		self.images = {}
 		self.training = True
-		self.people = self.getUniqueIdentities()
 		self.svm = None
 		if args.unknown:
 			self.unknownImgs = np.load("./examples/web/unknown.npy")
@@ -132,11 +168,11 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			if not self.training:
 				self.trainSVM()
 		elif msg['type'] == "ADD_PERSON":
-			self.people.append(msg['val'].encode('ascii', 'ignore'))
-			print(self.people)
+			people.append(msg['val'].encode('ascii', 'ignore'))
+			print(people)
 		elif msg['type'] == "UPDATE_IDENTITY":
 			h = msg['hash'].encode('ascii', 'ignore')
-			selfImage = self.getI(h)
+			selfImage = getI(h)
 			if selfImage is not None:
 				selfImage.identity = msg['idx']
 				if not self.training:
@@ -145,7 +181,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				print("Image not found.")
 		elif msg['type'] == "REMOVE_IMAGE":
 			h = msg['hash'].encode('ascii', 'ignore')
-			selfImage = self.getI(h)
+			selfImage = getI(h)
 			if selfImage is not None:
 				r.delete(h)
 				if not self.training:
@@ -165,37 +201,23 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 
 		for jsImage in jsImages:
 			h = jsImage['hash'].encode('ascii', 'ignore')
-			self.setI(h, Face(np.array(jsImage['representation']),
+			setI(h, Face(np.array(jsImage['representation']),
 									jsImage['identity'],
 									jsPeople[jsImage['identity']].encode('ascii', 'ignore')))
 
 		for jsPerson in jsPeople:
-			self.people.append(jsPerson.encode('ascii', 'ignore'))
+			people.append(jsPerson.encode('ascii', 'ignore'))
 
 		if not training:
 			self.trainSVM()
-
-	def getI(self, key):
-		val = r.get(key)
-		#print("self-images[{}] = {}".format(key, val))
-		if val is not None:
-			return pickle.loads(val)
-			
-	def setI(self, key, val):
-		r.set(key, pickle.dumps(val))
-		
-	def getP(self, key):
-		r.get(key)
 	
-	def setP(self, key, val):
-		r.set(key, val)
 	
 	def getData(self):
 		X = []
 		y = []
 		keys = r.keys('*')
 		for key in keys:
-			img = self.getI(key)
+			img = getI(key)
 			X.append(img.rep)
 			y.append(img.identity)
 
@@ -275,35 +297,15 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				 'kernel': ['rbf']}
 			]
 			self.svm = GridSearchCV(SVC(C=1), param_grid, cv=5).fit(X, y)
-	
-	def getNumIdentities(self):
-		X = []
-		y = []
-		keys = r.keys('*')
-		for key in keys:
-			img = self.getI(key)
-			X.append(img.rep)
-			y.append(img.identity)
-
-		numIdentities = len(set(y + [-1])) - 1
-		return numIdentities
 		
-	def getUniqueIdentities(self):
-		numIdentities = self.getNumIdentities()
-		y = ["" for x in range(numIdentities)]
-		keys = r.keys('*')
-		for key in keys:
-			img = self.getI(key)
-			if img.name not in y: 
-				y[img.identity] = img.name
-		return y
+	
 	
 	def comparison(self, identity, phash, rep):
 		comparison = {}
 		# change to looping the whole images arr
 		keys = r.keys('*')
 		for hash in keys:
-			face = self.getI(hash)		
+			face = getI(hash)		
 			rep1 = face.rep
 			diff = rep - rep1
 			diff = np.dot(diff, diff)
@@ -322,7 +324,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				identity = id
 			
 		if identity > -1:
-			self.setI(phash, Face(rep, identity, self.people[identity]))
+			setI(phash, Face(rep, identity, people[identity]))
 		print("comparison result: identity is {}, min is {}".format(identity, min))
 		return identity
 		
@@ -382,7 +384,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 
 			phash = str(imagehash.phash(Image.fromarray(alignedFace)))
 			numIdentities = self.getNumIdentities()
-			pastImage = self.getI(phash)
+			pastImage = getI(phash)
 			if pastImage is not None:
 				identity = pastImage.identity
 			else:
@@ -408,8 +410,8 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 						identity = numIdentities
 						identities.append(identity)
 						newPerson = str(time.time()) + str(i)
-						self.people.append(newPerson)
-						self.setI(phash, Face(rep, identity, newPerson))
+						people.append(newPerson)
+						setI(phash, Face(rep, identity, newPerson))
 						print("new identity = {}, new person = {}".format(identity, newPerson))
 						self.tryTrain()						
 						msg = {
@@ -426,9 +428,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					else:
 						self.sendNewImage(phash, identity, rep, alignedFace)
 				else:
-					if len(self.people) == 0:
+					if len(people) == 0:
 						identity = -1
-					elif len(self.people) == 1:
+					elif len(people) == 1:
 						identity = 0
 					elif self.svm:
 						print("predicting")
@@ -448,12 +450,12 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					cv2.circle(annotatedFrame, center=landmarks[p], radius=3,
 							   color=(102, 204, 255), thickness=-1)
 				if identity == -1:
-					if len(self.people) == 1:
-						name = self.people[0]
+					if len(people) == 1:
+						name = people[0]
 					else:
 						name = "Unknown"
 				else:
-					name = self.people[identity]
+					name = people[identity]
 				cv2.putText(annotatedFrame, name, (bb.left(), bb.top() - 10),
 							cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.75,
 							color=(152, 255, 204), thickness=2)
