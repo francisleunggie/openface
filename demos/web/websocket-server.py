@@ -40,6 +40,7 @@ import StringIO
 import urllib
 import base64
 import time
+import datetime
 import redis
 import pickle
 
@@ -93,10 +94,12 @@ class Face:
 		self.timestamp = timestamp
 
 	def __repr__(self):
-		return "{{id: {}, rep[0:5]: {}, name: {}}}".format(
+		return "{{id: {}, rep[0:5]: {}, name: {}, from {} at {}}}".format(
 			str(self.identity),
 			self.rep[0:5], 
-			self.name
+			self.name,
+			self.cameraIP,
+			st = datetime.datetime.fromtimestamp(float(self.timestamp)).strftime('%Y-%m-%d %H:%M:%S')
 		)
 							  
 def getI(key):
@@ -126,6 +129,7 @@ def getUniqueIdentities():
 	keys = r.keys('*')
 	for key in keys:
 		img = getI(key)
+		print("saved face is {}".format(img))
 		if img.name not in y: 
 			y[img.identity] = img.name
 	return y
