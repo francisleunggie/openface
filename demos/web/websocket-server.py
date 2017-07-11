@@ -106,6 +106,9 @@ class Face:
 		repJ = self.rep.tolist()
 		j = self.__dict__
 		j["rep"] = repJ
+		j["name"] = j["name"].encode('ascii', 'ignore')
+		j["cameraIP"] = j["cameraIP"].encode('ascii', 'ignore')
+		j["timestamp"] = j["timestamp"].encode('ascii', 'ignore')
 		return json.dumps(j)
 		
 	@classmethod
