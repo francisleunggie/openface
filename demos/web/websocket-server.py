@@ -106,10 +106,12 @@ def getI(key):
 	val = r.get(key)
 	#print("self-images[{}] = {}".format(key, val))
 	if val is not None:
-		return pickle.loads(val)
+		val = json.loads(val)
+		return Face.loads(val)
 		
 def setI(key, val):
-	r.set(key, pickle.dumps(val))			
+	#r.set(key, pickle.dumps(val))			
+	r.set(key, json.dump(val.__dict__))			
 	
 def getNumIdentities():
 	X = []
