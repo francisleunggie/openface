@@ -56,7 +56,7 @@ import matplotlib.cm as cm
 import openface
 
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
-people = getUniqueIdentities()
+
 modelDir = os.path.join(fileDir, '..', '..', 'models')
 dlibModelDir = os.path.join(modelDir, 'dlib')
 openfaceModelDir = os.path.join(modelDir, 'openface')
@@ -119,6 +119,8 @@ def sendIdentities(identities):
 		"identities": identities
 	}
 	self.sendMessage(json.dumps(msg))
+
+people = getUniqueIdentities()	
 
 class Face:
 
