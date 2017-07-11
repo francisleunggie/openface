@@ -70,7 +70,8 @@ function sendFrameLoop() {
 		var msg = {
 			'type': 'FRAME',
 			'dataURL': dataURL,
-			'identity': -1//defaultPerson
+			'identity': -1,//defaultPerson
+			'cameraIP': cameraIP
 		};
 		socket.send(JSON.stringify(msg));
 		tok--;
@@ -148,7 +149,8 @@ function sendState() {
 		'type': 'ALL_STATE',
 		'images': images,
 		'people': people,
-		'training': training
+		'training': training,
+		'cameraIP': cameraIP
 	};
 	socket.send(JSON.stringify(msg));
 }
