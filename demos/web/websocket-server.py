@@ -99,7 +99,7 @@ class Face:
 			self.rep[0:5], 
 			self.name,
 			self.cameraIP,
-			st = datetime.datetime.fromtimestamp(float(self.timestamp)).strftime('%Y-%m-%d %H:%M:%S')
+			datetime.datetime.fromtimestamp(float(self.timestamp)).strftime('%Y-%m-%d %H:%M:%S')
 		)
 							  
 def getI(key):
