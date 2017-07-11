@@ -347,7 +347,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		}
 		self.sendMessage(json.dumps(msg))
 		
-	def sendPeople(people):
+	def sendPeople(self, people):
 		msg = {
 			"type": "PEOPLE",
 			"people": people
