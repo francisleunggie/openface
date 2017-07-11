@@ -197,6 +197,8 @@ function createSocket(address, name) {
 			addPersonToDropDown(j);
 		} else if (j.type == "IDENTITIES") {
 			addPersonToDropDown(j);
+		} else if (j.type == "PEOPLE") {
+			setPeople(j);
 		} else if (j.type == "ANNOTATED") {
 			$("#detectedFaces").html(
 				"<img src='" + j['content'] + "' width='430px'></img>"
@@ -269,6 +271,27 @@ function addPersonToDropDown(j) {
 			if (idIdx != -1) {
 				identity = people[idIdx];
 			}
+			h += "<li>" + identity + "</li>";
+		}
+	} else {
+		h += "<li>Nobody detected.</li>";
+	}
+	h += "</ul>"
+	$("#peopleInVideo").html(h);
+}
+
+function setPeople(j) {
+	//alert(j.identities);
+	people = j.people
+	
+	var h = "Last updated: " + (new Date()).toTimeString();
+	h += "<ul>";
+	var len = j.people.length
+	if (len > 0) {
+		for (var i = 0; i < len; i++) {
+			
+			identity = people[idIdx];
+			
 			h += "<li>" + identity + "</li>";
 		}
 	} else {
