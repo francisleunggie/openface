@@ -198,8 +198,8 @@ function createSocket(address, name) {
 			}
 		} else if (j.type == "NEW_PERSON") {
 			//alert(j.type);
-			addPerson(j.newPerson);
-			addPersonToDropDown(j);
+			addPerson(j.newPerson, j.cameraIP);
+			addPersonToDropDown(j, j.cameraIP);
 		} else if (j.type == "IDENTITIES") {
 			addPersonToDropDown(j);
 		} else if (j.type == "PEOPLE") {
@@ -259,12 +259,12 @@ function addPersonCallback(el) {
 	redrawPeople();
 }
 
-function addPerson(newPerson) {
+function addPerson(newPerson, jCameraIP) {
 	defaultPerson = people.length;
 	if (newPerson == "") return;
 	people.push(newPerson);
 	$("#addPersonTxt").val("");
-	redrawPeople();
+	if (jCameraIP === cameraIP)	redrawPeople();
 }
 
 function addPersonToDropDown(j) {
