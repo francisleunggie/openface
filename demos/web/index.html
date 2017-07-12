@@ -237,5 +237,8 @@ limitations under the License.
      redrawPeople();
      // createSocket("wss://facerec.cmusatyalab.org:9000", "CMU");
      createSocket("wss://" + window.location.hostname + ":9000", "Local");
+	 $(function() {
+		$('#myIP').text(cameraIP);
+	 });
     </script>
 </html>
