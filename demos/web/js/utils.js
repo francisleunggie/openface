@@ -54,4 +54,5 @@ function getUserIP(onNewIP) { //  onNewIp - your listener function for new IPs
 var cameraIP;
 getUserIP(function(ip){
     cameraIP = ip;
+	$('#myIP').text(cameraIP);
 });

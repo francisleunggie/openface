@@ -186,6 +186,7 @@ function createSocket(address, name) {
 		} else if (j.type == "PROCESSED") {
 			tok++;
 		} else if (j.type == "NEW_IMAGE") {
+			$("#theirIP").text(j.cameraIP);
 			if (j.cameraIP === cameraIP){
 				images.push({
 					hash: j.hash,
@@ -204,6 +205,7 @@ function createSocket(address, name) {
 		} else if (j.type == "PEOPLE") {
 			setPeople(j);
 		} else if (j.type == "ANNOTATED") {
+			$("#theirIP").text(j.cameraIP);
 			if (j.cameraIP === cameraIP) {
 				$("#detectedFaces").html(
 					"<img src='" + j['content'] + "' width='430px'></img>"
