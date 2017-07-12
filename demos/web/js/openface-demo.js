@@ -81,7 +81,7 @@ function sendFrameLoop() {
 
 
 function getPeopleInfoHtml() {
-	var info = {'-1': 0};
+	var info = {/*'-1': 0*/};
 	var len = people.length;
 	for (var i = 0; i < len; i++) {
 		info[i] = 0;
@@ -93,7 +93,7 @@ function getPeopleInfoHtml() {
 		info[id] += 1;
 	}
 
-	var h = "<li><b>Unknown:</b> "+info['-1']+"</li>";
+	var h = "";//<li><b>Unknown:</b> "+info['-1']+"</li>";
 	var len = people.length;
 	for (var i = 0; i < len; i++) {
 		h += "<li><b>"+people[i]+":</b> "+info[i]+"</li>";
@@ -186,13 +186,15 @@ function createSocket(address, name) {
 		} else if (j.type == "PROCESSED") {
 			tok++;
 		} else if (j.type == "NEW_IMAGE") {
-			images.push({
-				hash: j.hash,
-				identity: j.identity,
-				image: getDataURLFromRGB(j.content),
-				representation: j.representation
-			});
-			redrawPeople();
+			if (j.cameraIP === cameraIP){
+				images.push({
+					hash: j.hash,
+					identity: j.identity,
+					image: getDataURLFromRGB(j.content),
+					representation: j.representation
+				});
+				redrawPeople();
+			}
 		} else if (j.type == "NEW_PERSON") {
 			//alert(j.type);
 			addPerson(j.newPerson);
@@ -202,9 +204,11 @@ function createSocket(address, name) {
 		} else if (j.type == "PEOPLE") {
 			setPeople(j);
 		} else if (j.type == "ANNOTATED") {
-			$("#detectedFaces").html(
-				"<img src='" + j['content'] + "' width='430px'></img>"
-			)
+			if (j.cameraIP === cameraIP) {
+				$("#detectedFaces").html(
+					"<img src='" + j['content'] + "' width='430px'></img>"
+				)
+			}
 		} else if (j.type == "TSNE_DATA") {
 			BootstrapDialog.show({
 				message: "<img src='" + j['content'] + "' width='100%'></img>"

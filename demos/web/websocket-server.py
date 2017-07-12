@@ -359,14 +359,15 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		except Exception as e:
 			print "Error: {}".format(str(e))
 			
-	def sendNewImage(self, phash, identity, rep, alignedFace):
+	def sendNewImage(self, phash, identity, rep, alignedFace, cameraIP):
 		content = [str(x) for x in alignedFace.flatten()]
 		msg = {
 			"type": "NEW_IMAGE",
 			"hash": phash,
 			"content": content,
 			"identity": identity,
-			"representation": rep.tolist()
+			"representation": rep.tolist(),
+			"cameraIP": cameraIP
 		}
 		self.sendMessage(json.dumps(msg))
 		
@@ -450,15 +451,16 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 							"type": "NEW_PERSON",
 							"hash": phash,
 							"identities": identities,
-							"newPerson": newPerson
+							"newPerson": newPerson,
+							"cameraIP": cameraIP
 						}
 						self.sendMessage(json.dumps(msg))
 						# TODO: Transferring as a string is suboptimal.
 						# content = [str(x) for x in cv2.resize(alignedFace, (0,0),
 						# fx=0.5, fy=0.5).flatten()]
-						self.sendNewImage(phash, identity, rep, alignedFace)
+						self.sendNewImage(phash, identity, rep, alignedFace, cameraIP)
 					else:
-						self.sendNewImage(phash, identity, rep, alignedFace)
+						self.sendNewImage(phash, identity, rep, alignedFace, cameraIP)
 				else:
 					if len(people) == 0:
 						identity = -1
@@ -511,7 +513,8 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				urllib.quote(base64.b64encode(imgdata.buf))
 			msg = {
 				"type": "ANNOTATED",
-				"content": content
+				"content": content,
+				"cameraIP":, cameraIP
 			}
 			plt.close()
 			self.sendMessage(json.dumps(msg))
