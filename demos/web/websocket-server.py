@@ -514,7 +514,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			msg = {
 				"type": "ANNOTATED",
 				"content": content,
-				"cameraIP":, cameraIP
+				"cameraIP": cameraIP
 			}
 			plt.close()
 			self.sendMessage(json.dumps(msg))
