@@ -41,7 +41,6 @@ import urllib
 import base64
 import time
 import datetime
-import random
 import redis
 import pickle
 
@@ -49,6 +48,7 @@ from sklearn.decomposition import PCA
 from sklearn.grid_search import GridSearchCV
 from sklearn.manifold import TSNE
 from sklearn.svm import SVC
+from random import random
 
 import matplotlib as mpl
 mpl.use('Agg')
