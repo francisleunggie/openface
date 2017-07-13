@@ -18,7 +18,6 @@ import os
 import sys
 fileDir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(fileDir, "..", ".."))
-#sys.path.append(os.path.join(fileDir, "..", "..","colors"))
 
 import txaio
 txaio.use_twisted()
@@ -85,6 +84,8 @@ args = parser.parse_args()
 align = openface.AlignDlib(args.dlibFacePredictor)
 net = openface.TorchNeuralNet(args.networkModel, imgDim=args.imgDim,
 							  cuda=args.cuda)
+							  
+colorListLen = len(colorList)
 							  
 class Face:
 
@@ -480,7 +481,11 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			if not self.training:
 				bl = (bb.left(), bb.bottom())
 				tr = (bb.right(), bb.top())
-				cv2.rectangle(annotatedFrame, bl, tr, color=(153, 255, 204),
+				#cv2.rectangle(annotatedFrame, bl, tr, color=(153, 255, 204),
+				bColor = (153, 255, 204)
+				if identity != -1:
+					bColor = colorList[identity % colorListLen]
+				cv2.rectangle(annotatedFrame, bl, tr, color=bColor,
 							  thickness=3)
 				for p in openface.AlignDlib.OUTER_EYES_AND_NOSE:
 					cv2.circle(annotatedFrame, center=landmarks[p], radius=3,
