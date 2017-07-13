@@ -1,4 +1,7 @@
-colorList = [
+
+	def init():
+		global colorList
+		colorList = [
 				(0,0,0),
                 (255,0,0),
 				(0,255,0),
