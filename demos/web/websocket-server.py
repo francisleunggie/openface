@@ -18,7 +18,7 @@ import os
 import sys
 fileDir = os.path.dirname(os.path.realpath(__file__))
 sys.path.append(os.path.join(fileDir, "..", ".."))
-sys.path.append(os.path.join(fileDir, "..", "..","colors"))
+#sys.path.append(os.path.join(fileDir, "..", "..","colors"))
 
 import txaio
 txaio.use_twisted()
