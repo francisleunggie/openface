@@ -162,7 +162,7 @@ def getUniqueIdentities():
 	for key in keys:
 		img = getI(key)
 		#print("saved face is {}".format(img))
-		print(img.__dict__)
+		#print(img.__dict__)
 		if img.name not in y: 
 			y[img.identity] = img.name
 	return y
@@ -222,6 +222,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				face = getI(hash)		
 				if face.name == toDelete:
 					r.delete(hash)
+			self.sendPeople(people)
 		elif msg['type'] == "UPDATE_IDENTITY":
 			h = msg['hash'].encode('ascii', 'ignore')
 			selfImage = getI(h)
