@@ -43,12 +43,13 @@ import time
 import datetime
 import redis
 import pickle
+import string
+import random
 
 from sklearn.decomposition import PCA
 from sklearn.grid_search import GridSearchCV
 from sklearn.manifold import TSNE
 from sklearn.svm import SVC
-from random import random
 
 import matplotlib as mpl
 mpl.use('Agg')
@@ -383,8 +384,8 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		}
 		self.sendMessage(json.dumps(msg))
 		
-	def randomName(self, n):
-		return ''.join(random.choice(string.ascii_uppercase + string.digits, k=n))
+	def randomName(self, n=6, chars=string.ascii_uppercase + string.digits):
+		return ''.join(random.choice(chars) for _ in range(n))
 	
 	def processFrame(self, dataURL, identity, cameraIP, timestamp):
 		head = "data:image/jpeg;base64,"
