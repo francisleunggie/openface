@@ -1,0 +1,159 @@
+<!--
+Copyright 2015-2016 Carnegie Mellon University
+
+Licensed under the Apache License, Version 2.0 (the "License");
+you may not use this file except in compliance with the License.
+You may obtain a copy of the License at
+
+    http://www.apache.org/licenses/LICENSE-2.0
+
+Unless required by applicable law or agreed to in writing, software
+distributed under the License is distributed on an "AS IS" BASIS,
+WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+See the License for the specific language governing permissions and
+limitations under the License.
+-->
+
+<!doctype html>
+<html lang="en">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="X-UA-Compatible" content="IE=edge">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+        <title>Face Recognition</title>
+        <link href="vendor/css/bootstrap.min.css" rel="stylesheet">
+        <link href="vendor/css/bootstrap-toggle.min.css" rel="stylesheet">
+        <link href="vendor/css/bootstrap-dialog.min.css" rel="stylesheet">
+        <link href="css/main.css" rel="stylesheet">
+    </head>
+    <body>
+        <div class="container">
+            
+            <div class="content">
+                <h2>People in Video</h2>
+                <div id="peopleInVideo"></div>
+
+                <br/>
+
+                <ul id="peopleInfo"></ul>
+
+                <br/>
+
+                <table class="table table-striped table-hover table-condensed"
+                       id="peopleTable">
+                </table>
+                <script id="peopleTableTmpl" type="text/x-handlebars-template">
+                    <thead><tr>
+                        <th></th>
+                        <th>Unknown</th>
+                        {{#each people}}
+                        <th>{{this}}</th>
+                        {{/each}}
+                    </tr></thead>
+
+                    <tbody>
+                        {{#each images}}
+                        <tr id="ppl_row_{{this.hash}}">
+                            <td valign='middle'>
+                                <a href="javascript:removeImage('{{this.hash}}')"
+                                   class='remove'>
+                                    ×
+                                </a>
+                                </font>
+                                <img src="{{this.image}}"/>
+                            </td>
+                            <td>
+                                <input type='radio'
+                                       name='ppl_radio_{{this.hash}}'
+                                       value="-1"
+                                       {{#ifEq identity -1}}
+                                       checked
+                                       {{/ifEq}}
+                                       onClick="updateIdentity('{{this.hash}}', -1)"
+                                       >
+                            </td>
+                            {{#each ../people}}
+                            <td>
+                                <input type='radio'
+                                       name='ppl_radio_{{../this.hash}}'
+                                       value="{{@index}}"
+                                       {{#ifEq ../identity @index}}
+                                       checked
+                                       {{/ifEq}}
+                                       onClick="updateIdentity('{{../this.hash}}', {{@index}})"
+                                       >
+                            </td>
+                            {{/each}}
+                        </tr>
+                        {{/each}}
+                    </tbody>
+                </script>
+            </div>
+        </div>
+    </body>
+    <script src="vendor/js/jquery.min.js"></script>
+    <script src="vendor/js/bootstrap.min.js"></script>
+    <script src="vendor/js/bootstrap-toggle.min.js"></script>
+    <script src="vendor/js/bootstrap-dialog.min.js"></script>
+    <script src="vendor/js/handlebars.min.js"></script>
+    <script src="vendor/js/jstat.min.js"></script>
+    <script type="text/javascript">
+     function createSocket(address, name) {
+		socket = new WebSocket(address);
+		socketName = name;
+		socket.binaryType = "arraybuffer";
+		socket.onopen = function() {
+			sentTimes = [];
+			receivedTimes = [];
+			tok = defaultTok;
+			numNulls = 0
+
+			socket.send(JSON.stringify({'type': 'GET_PEOPLE'}));
+			sentTimes.push(new Date());
+		}
+		socket.onmessage = function(e) {
+			console.log(e);
+			j = JSON.parse(e.data)
+			if (j.type == "PEOPLE") {
+				setPeople(j);
+			} else {
+				console.log("Unrecognized message type: " + j.type);
+			}
+		}
+		socket.onerror = function(e) {
+			console.log("Error creating WebSocket connection to " + address);
+			console.log(e);
+		}
+		socket.onclose = function(e) {
+			
+		}
+	}
+     createSocket("wss://" + window.location.hostname + ":9000", "Local");
+	 function setPeople(j) {
+		//alert(j.identities);
+		people = []
+		var h = "Last updated: " + (new Date()).toTimeString();
+		h += "<ul>";
+		var len = j.people.length
+		if (len > 0) {
+			for (var i = 0; i < len; i++) {
+				identity = j.people[i];
+				if (people.indexOf(identity) === -1) {
+					people.push(identity);
+					h += "<li>" + identity + '<button onclick="deletePerson(\'' + identity '\')">delete</button></li>';
+				}
+			}
+		} else {
+			h += "<li>Nobody detected.</li>";
+		}
+		h += "</ul>"
+		$("#peopleInVideo").html(h);
+	}
+	
+	function deletePerson(name) {
+		socket.send(JSON.stringify({'type': 'DELETE_PEOPLE', 'name': name}));
+		sentTimes.push(new Date());
+	
+	}
+    </script>
+</html>

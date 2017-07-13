@@ -144,6 +144,16 @@ def getNumIdentities():
 
 	numIdentities = len(set(y + [-1])) - 1
 	return numIdentities
+	
+def resyncIdentities():
+	y = []
+	keys = r.keys('*')
+	for key in keys:
+		img = getI(key)
+		if img.name not in y:
+			y.append(img.name)
+		img.identity = y.index(img.name)
+		setI(key, img)
 		
 def getUniqueIdentities():
 	numIdentities = getNumIdentities()
@@ -157,6 +167,7 @@ def getUniqueIdentities():
 			y[img.identity] = img.name
 	return y
 	
+resyncIdentities()
 people = getUniqueIdentities()	
 
 
@@ -189,6 +200,8 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			self.loadState(msg['images'], msg['training'], msg['people'], msg['cameraIP'])
 		elif msg['type'] == "NULL":
 			self.sendMessage('{"type": "NULL"}')
+		elif msg['type'] == "GET_PEOPLE":
+			self.sendPeople(people)
 		elif msg['type'] == "FRAME":
 			self.processFrame(msg['dataURL'], msg['identity'], msg['cameraIP'], str(time.time()))
 			self.sendMessage('{"type": "PROCESSED"}')
@@ -197,8 +210,18 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			if not self.training:
 				self.trainSVM()
 		elif msg['type'] == "ADD_PERSON":
+			
 			people.append(msg['val'].encode('ascii', 'ignore'))
 			print(people)
+		elif msg['type'] == "DELETE_PEOPLE":
+			toDelete = msg['name']
+			if toDelete in people:
+				people.remove(toDelete)
+			keys = r.keys('*')
+			for hash in keys:
+				face = getI(hash)		
+				if face.name == toDelete:
+					r.delete(hash)
 		elif msg['type'] == "UPDATE_IDENTITY":
 			h = msg['hash'].encode('ascii', 'ignore')
 			selfImage = getI(h)
