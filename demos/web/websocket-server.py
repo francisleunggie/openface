@@ -154,7 +154,8 @@ def resyncIdentities():
 			y.append(img.name)
 		img.identity = y.index(img.name)
 		setI(key, img)
-		
+	return y
+	
 def getUniqueIdentities():
 	numIdentities = getNumIdentities()
 	y = ["" for x in range(numIdentities)]
@@ -167,8 +168,8 @@ def getUniqueIdentities():
 			y[img.identity] = img.name
 	return y
 	
-resyncIdentities()
-people = getUniqueIdentities()	
+
+people = resyncIdentities()	
 
 
 class OpenFaceServerProtocol(WebSocketServerProtocol):
@@ -222,8 +223,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				face = getI(hash)		
 				if face.name == toDelete:
 					r.delete(hash)
-			resyncIdentities()
-			people = getUniqueIdentities()	
+			people = resyncIdentities()
 			self.sendPeople(people)
 		elif msg['type'] == "UPDATE_IDENTITY":
 			h = msg['hash'].encode('ascii', 'ignore')
