@@ -216,6 +216,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			print(people)
 		elif msg['type'] == "DELETE_PEOPLE":
 			toDelete = msg['name']
+			print("people is {}".format(people))
 			if toDelete in people:
 				people.remove(toDelete)
 			keys = r.keys('*')
