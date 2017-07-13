@@ -211,8 +211,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			if not self.training:
 				self.trainSVM()
 		elif msg['type'] == "ADD_PERSON":
-			
-			people.append(msg['val'].encode('ascii', 'ignore'))
+			newPerson = msg['val'].encode('ascii', 'ignore')
+			if newPerson not in people:
+				people.append(newPerson)
 			print(people)
 		elif msg['type'] == "DELETE_PEOPLE":
 			toDelete = msg['name']
@@ -264,7 +265,8 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 									str(time.time())))
 
 		for jsPerson in jsPeople:
-			people.append(jsPerson.encode('ascii', 'ignore'))
+			if jsPerson not in people:
+				people.append(jsPerson.encode('ascii', 'ignore'))
 
 		if not training:
 			self.trainSVM()
@@ -479,7 +481,8 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 						identity = numIdentities
 						identities.append(identity)
 						newPerson = "visitor_" + self.randomName(6)
-						people.append(newPerson)
+						if newPerson not in people:
+							people.append(newPerson)
 						setI(phash, Face(rep, identity, newPerson, cameraIP, timestamp))
 						print("new identity = {}, new person = {}".format(identity, newPerson))
 						self.tryTrain()						
