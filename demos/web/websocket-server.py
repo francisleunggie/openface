@@ -526,7 +526,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					else:
 						name = "Unknown"
 				else:
-					name = people[identity]
+					name = self.getI(phash).name
 				cv2.putText(annotatedFrame, name, (bb.left(), bb.top() - 10),
 							cv2.FONT_HERSHEY_SIMPLEX, fontScale=0.75,
 							color=(152, 255, 204), thickness=2)
