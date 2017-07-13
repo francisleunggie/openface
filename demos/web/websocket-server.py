@@ -222,6 +222,8 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				face = getI(hash)		
 				if face.name == toDelete:
 					r.delete(hash)
+			resyncIdentities()
+			people = getUniqueIdentities()	
 			self.sendPeople(people)
 		elif msg['type'] == "UPDATE_IDENTITY":
 			h = msg['hash'].encode('ascii', 'ignore')
