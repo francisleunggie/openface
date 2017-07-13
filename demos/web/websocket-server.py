@@ -384,7 +384,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		self.sendMessage(json.dumps(msg))
 		
 	def randomName(self, n):
-		return ''.join(random.choices(string.ascii_uppercase + string.digits, k=n))
+		return ''.join(random.choice(string.ascii_uppercase + string.digits, k=n))
 	
 	def processFrame(self, dataURL, identity, cameraIP, timestamp):
 		head = "data:image/jpeg;base64,"
