@@ -381,6 +381,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			"people": people
 		}
 		self.sendMessage(json.dumps(msg))
+		
+	def randomName(self, n):
+		return ''.join(random.choices(string.ascii_uppercase + string.digits, k=n))
 	
 	def processFrame(self, dataURL, identity, cameraIP, timestamp):
 		head = "data:image/jpeg;base64,"
@@ -408,7 +411,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		#bbs = align.getAllFaceBoundingBoxes(rgbFrame)
 		bb = align.getLargestFaceBoundingBox(rgbFrame)
 		bbs = [bb] if bb is not None else []
-		i = 0
+		#i = 0
 		for bb in bbs:
 			# print(len(bbs))
 			i = i + 1
@@ -446,7 +449,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					if identity == -1:
 						identity = numIdentities
 						identities.append(identity)
-						newPerson = str(time.time()) + str(i)
+						newPerson = randomName(6)
 						people.append(newPerson)
 						setI(phash, Face(rep, identity, newPerson, cameraIP, timestamp))
 						print("new identity = {}, new person = {}".format(identity, newPerson))
