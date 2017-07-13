@@ -85,7 +85,7 @@ align = openface.AlignDlib(args.dlibFacePredictor)
 net = openface.TorchNeuralNet(args.networkModel, imgDim=args.imgDim,
 							  cuda=args.cuda)
 							  
-colorListLen = len(colorList)
+colorListLen = len(colors.colorList)
 							  
 class Face:
 
@@ -484,7 +484,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				#cv2.rectangle(annotatedFrame, bl, tr, color=(153, 255, 204),
 				bColor = (153, 255, 204)
 				if identity != -1:
-					bColor = colorList[identity % colorListLen]
+					bColor = colors.colorList[identity % colorListLen]
 				cv2.rectangle(annotatedFrame, bl, tr, color=bColor,
 							  thickness=3)
 				for p in openface.AlignDlib.OUTER_EYES_AND_NOSE:
