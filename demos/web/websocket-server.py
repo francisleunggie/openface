@@ -55,8 +55,8 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
 import openface
-import colors
-colors.init()
+import myColors
+myColors.init()
 
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
 
@@ -86,7 +86,7 @@ align = openface.AlignDlib(args.dlibFacePredictor)
 net = openface.TorchNeuralNet(args.networkModel, imgDim=args.imgDim,
 							  cuda=args.cuda)
 							  
-colorListLen = len(colors.colorList)
+colorListLen = len(myColors.colorList)
 							  
 class Face:
 
@@ -485,7 +485,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 				#cv2.rectangle(annotatedFrame, bl, tr, color=(153, 255, 204),
 				bColor = (153, 255, 204)
 				if identity != -1:
-					bColor = colors.colorList[identity % colorListLen]
+					bColor = myColors.colorList[identity % colorListLen]
 				cv2.rectangle(annotatedFrame, bl, tr, color=bColor,
 							  thickness=3)
 				for p in openface.AlignDlib.OUTER_EYES_AND_NOSE:
