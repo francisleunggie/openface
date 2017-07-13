@@ -55,7 +55,7 @@ import matplotlib.pyplot as plt
 import matplotlib.cm as cm
 
 import openface
-import myColors
+from myColors import myColors
 myColors.init()
 
 r = redis.StrictRedis(host='localhost', port=6379, db=0)
