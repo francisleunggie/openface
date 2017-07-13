@@ -449,7 +449,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 					if identity == -1:
 						identity = numIdentities
 						identities.append(identity)
-						newPerson = randomName(6)
+						newPerson = "visitor_" + self.randomName(6)
 						people.append(newPerson)
 						setI(phash, Face(rep, identity, newPerson, cameraIP, timestamp))
 						print("new identity = {}, new person = {}".format(identity, newPerson))
