@@ -414,7 +414,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		#i = 0
 		for bb in bbs:
 			# print(len(bbs))
-			i = i + 1
+			#i = i + 1
 			landmarks = align.findLandmarks(rgbFrame, bb)
 			alignedFace = align.align(args.imgDim, rgbFrame, bb,
 									  landmarks=landmarks,
