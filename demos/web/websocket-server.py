@@ -424,7 +424,11 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			face["phash"] = hash
 			del face["rep"]
 			y.append(face)
-		self.sendMessage(json.dumps(y))
+		msg = {
+			"type": "ALL_DATA",
+			"data": y
+		}
+		self.sendMessage(json.dumps(msg))
 	
 	def sendPeople(self, people):
 		msg = {
