@@ -203,7 +203,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			clients.remove(client)
 			
 
-	 def broadcast(self, msg):
+	def broadcast(self, msg):
 		print("broadcasting message '{}' ..".format(msg))
 		for c in self.clients:
 			c.sendMessage(msg)
