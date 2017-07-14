@@ -208,7 +208,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		for c in self.clients:
 			c.sendMessage(msg)
 			#print("message sent to {}".format(c.peer))
-	
+
 	def onOpen(self):
 		print("WebSocket connection open.")
 		self.sendPeople(people)
