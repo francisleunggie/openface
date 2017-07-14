@@ -1,4 +1,4 @@
-
+# comment
 def init():
 	global colorList
 	colorList = [
