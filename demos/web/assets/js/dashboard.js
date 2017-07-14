@@ -91,6 +91,10 @@ function refreshDataCommon() {
 	data_starttimeXnum = superData.timeBucketsCount;
 	data_engagementFreq = superData.engagementFreq;
 	data_starttimeXcameraIPXnum = starttimeXcameraIPXnum(metadata.min, metadata.cameraIPs);
+	linearGraphD();
+	bubbleGraphChart();
+	barChartAverage();
+	heatmap2();
 }
 
 function processTimeInfo() {
