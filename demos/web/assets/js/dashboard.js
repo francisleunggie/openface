@@ -76,7 +76,7 @@ function processTimeInfo() {
 	let min,
 	max;
 	dataImported.forEach((x) => {
-		x.time = new Date(x.timestamp);
+		x.time = new Date(parseFloat(x.timestamp));
 		if (!min || x.time < min)
 			min = x.time;
 		if (!max || x.time > max)
@@ -90,25 +90,26 @@ function processTimeInfo() {
 function starttimeXnum(min) {
 	// normalize the data to time steps
 	let timeStep = timeStep_starttimeXnum,
-	timeSteps = [min, min.addMinutes(timeStep)], 
+	timeSteps = [min, min.addSeconds(timeStep)], 
 	timeBuckets = {}, 
 	curr = 0;
 	dataImported.forEach((x) => {
-		// skip all intervals that has no data
-		while (x.time > timeSteps[curr + 1]) {
-			if (!timeBuckets[timeSteps[curr + 1]]) 
-				timeBuckets[timeSteps[curr + 1]] = 0;
-			curr += 1;
-			timeSteps[curr + 1] = timeSteps[curr].addMinutes(timeStep);
-		}
+		
 		// supposed to be a sure hit
 		if (x.time >= timeSteps[curr] && x.time < timeSteps[curr + 1]) {
 			if (!timeBuckets[timeSteps[curr]]) 
 				timeBuckets[timeSteps[curr]] = 0;
 			timeBuckets[timeSteps[curr]] += 1;
 		} 
+		// skip all intervals that has no data
+		while (x.time > timeSteps[curr + 1]) {
+			if (!timeBuckets[timeSteps[curr + 1]]) 
+				timeBuckets[timeSteps[curr + 1]] = 0;
+			curr += 1;
+			timeSteps[curr + 1] = timeSteps[curr].addSeconds(timeStep);
+		}
 		
 	});
-	console.log("dataImported, normalized data", timeBuckets);
+	console.log("starttimeXnum, normalized data", JSON.stringify(timeBuckets));
 	return {timeSteps, timeBuckets};
 }

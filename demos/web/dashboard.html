@@ -13,6 +13,7 @@
 
 
     <!-- Bootstrap core CSS     -->
+    <script src="assets/js/chartLouis.js"></script>
     <link href="assets/css/bootstrap.min.css" rel="stylesheet" />
 
     <!-- Animation library for notifications   -->
@@ -33,9 +34,10 @@
 
 
     <!--     Fonts and icons     -->
-    <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
-    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'>
+<!--     <link href="http://maxcdn.bootstrapcdn.com/font-awesome/4.2.0/css/font-awesome.min.css" rel="stylesheet">
+    <link href='http://fonts.googleapis.com/css?family=Roboto:400,700,300' rel='stylesheet' type='text/css'> -->
     <link href="assets/css/pe-icon-7-stroke.css" rel="stylesheet" />
+    <link rel="stylesheet" href="assets/css/export.css" type="text/css" media="all" />
 
 </head>
 <body>
@@ -133,7 +135,8 @@
                             </div>
                             <div class="content">
                                 <!-- <div id="chartPreferences" class="ct-chart ct-perfect-fourth"></div> -->
-                                <div id="chart"></div>
+                                <div id="chartdiv"></div>
+                                <svg></svg>
                             </div>
                         </div>
                     </div>
@@ -308,11 +311,14 @@
     <!--   Core JS Files   -->
     <script src="assets/js/jquery-1.10.2.js" type="text/javascript"></script>
 	<script src="assets/js/bootstrap.min.js" type="text/javascript"></script>
-    <script src="https://d3js.org/d3.v4.min.js"></script>
-    <script src="http://d3js.org/d3.v3.js"></script>
+<!--     <script src="https://d3js.org/d3.v4.min.js"></script>
+ -->    <script src="assets/js/d3.min.js"></script>
     <script src="assets/js/chartLouis.js" type="text/javascript"></script>
     <script src="assets/js/dashboard.js" type="text/javascript"></script>
-
+    <script src="assets/js/amcharts.js"></script>
+    <script src="assets/js/serial.js"></script>
+    <script src="assets/js/export.min.js"></script>
+    <script src="assets/js/light.js"></script>
     
 	<!--  Checkbox, Radio & Switch Plugins -->
 	<script src="assets/js/bootstrap-checkbox-radio-switch.js"></script>
@@ -322,10 +328,11 @@
  -->
     <!--  Notifications Plugin    -->
     <script src="assets/js/bootstrap-notify.js"></script>
+    <script src="assets/js/chartLouis.js"></script>
 
     <!--  Google Maps Plugin    -->
-    <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
-
+<!--     <script type="text/javascript" src="https://maps.googleapis.com/maps/api/js?sensor=false"></script>
+ -->
     <!-- Light Bootstrap Table Core javascript and methods for Demo purpose -->
 	<script src="assets/js/light-bootstrap-dashboard.js"></script>
 
@@ -334,7 +341,7 @@
 
 	<script type="text/javascript">
     	$(document).ready(function(){
-            loadGraphDemo();
+           // linearGraphD();
             loadHeatMap();
 });
         	
