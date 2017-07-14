@@ -413,7 +413,8 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			"representation": rep.tolist(),
 			"cameraIP": cameraIP
 		}
-		self.sendMessage(json.dumps(msg))
+		self.factory.broadcast((json.dumps(msg))
+		#self.sendMessage(json.dumps(msg))
 	
 	def sendAllData(self):
 		y = []
