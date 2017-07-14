@@ -200,7 +200,8 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def unregister(self, client):
 		if client in clients:
 			print("unregistered client {}".format(client.peer))
-			clients.remove(client)	
+			clients.remove(client)
+			
 
 	 def broadcast(self, msg):
 		print("broadcasting message '{}' ..".format(msg))
@@ -430,7 +431,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			"representation": rep.tolist(),
 			"cameraIP": cameraIP
 		}
-		self.factory.broadcast(json.dumps(msg))
+		self.broadcast(json.dumps(msg))
 		#self.sendMessage(json.dumps(msg))
 	
 	def sendAllData(self):
