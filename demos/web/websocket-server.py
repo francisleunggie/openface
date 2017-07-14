@@ -413,7 +413,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		for hash in keys:
 			face = getI(hash)
 			face["phash"] = hash
-			del face["rep"]
+			#del face["rep"]
 			y.append(face)
 		self.sendMessage(json.dumps(y))
 	
