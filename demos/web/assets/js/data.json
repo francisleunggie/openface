@@ -1,0 +1,118 @@
+{
+   "test": [
+      {
+         "source": 1,
+         "user": "15",
+         "date": "8",
+         "value": "20"
+      },
+      {
+         "source": 1,
+         "user": "42",
+         "date": "9",
+         "value": "15"
+      },
+      {
+         "source": 1,
+         "user": "29",
+         "date": "10",
+         "value": "79"
+      },
+      {
+         "source": 1,
+         "user": "346",
+         "date": "11",
+         "value": "324"
+      },
+      {
+         "source": 1,
+         "user": "44",
+         "date": "12",
+         "value": "69"
+      },
+      {
+         "source": 1,
+         "date": "13",
+         "user": "424",
+         "value": "53"
+      },
+      {
+         "source": 2,
+         "user": "28",
+         "date": "11",
+         "value": "48"
+      },
+       {
+         "source": 2,
+         "user": "24",
+         "date": "12",
+         "value": "60"
+      },
+            {
+         "source": 2,
+         "user": "2",
+         "date": "13",
+         "value": "10"
+      },
+      {
+         "source": 2,
+         "user": "413",
+         "date": "10",
+         "value": "60"
+      },
+      {
+         "source": 2,
+         "user": "34",
+         "date": "14",
+         "value": "41"
+      },
+      {
+         "source": 2,
+         "user": "313",
+         "date": "16",
+         "value": "51"
+      },
+      {
+         "source": 2,
+         "user": "21",
+         "date": "8",
+         "value": "36"
+      },
+      {
+         "source": 1,
+         "user": "513",
+         "date": "9",
+         "value": "61"
+      },
+      {
+         "source": 2,
+         "user": "18",
+         "date": "17",
+         "value": "23"
+      },
+      {
+         "source": 1,
+         "user": "471",
+         "date": "14",
+         "value": "76"
+      },
+      {
+         "source": 2,
+         "user": "17",
+         "date": "14",
+         "value": "29"
+      },
+      {
+         "source": 1,
+         "user": "119",
+         "date": "18",
+         "value": "181"
+      },
+      {
+         "source": 2,
+         "user": "25",
+         "date": "9",
+         "value": "25"
+      }
+   ]
+}
