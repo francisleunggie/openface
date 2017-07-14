@@ -189,7 +189,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def onConnect(self, request):
 		print("Client connecting: {0}".format(request.peer))
 		self.training = True
-		self.register(request.peer)
+		self.register(self)
 		#self.cameraIP = str(request.peer)
 
 	def register(self, client):
@@ -277,7 +277,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			print("Warning: Unknown message type: {}".format(msg['type']))
 
 	def onClose(self, wasClean, code, reason):
-		unregister(self)
+		self.unregister(self)
 		print("WebSocket connection closed: {0}".format(reason))
 
 	def loadState(self, jsImages, training, jsPeople, jscameraIP):
