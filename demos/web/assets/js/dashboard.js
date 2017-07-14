@@ -59,6 +59,7 @@ function createSocket(address, name) {
 				timestamp,
 				}
 				 */
+				j.time = new Date(parseFloat(j.timestamp) * 1000);
 				dataImported.push(j.data);
 				if (metadata.cameraIPs.indexOf(j.cameraIP) === -1) 
 					metadata.cameraIPs.push(j.cameraIP);
