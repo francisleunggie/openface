@@ -253,9 +253,13 @@ goog= data_starttimeXnum;
 
 function barChartAverage()
 {
+        var s1 = [];
+        var ticks = [];
     $.jqplot.config.enablePlugins = true;
-        var s1 = [2, 6, 7, 10];
-        var ticks = ['a', 'b', 'c', 'd'];
+    for(var i=0;i<data_engagementFreq.length;i++){
+      s1.push(data_engagementFreq[i][0]);
+      ticks.push(data_engagementFreq[i][1]);
+    }
          
         plot1 = $.jqplot('chartBarAverage', [s1], {
             // Only animate if we're not using excanvas (not in IE 7 or IE 8)..
