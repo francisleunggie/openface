@@ -190,6 +190,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def onOpen(self):
 		print("WebSocket connection open.")
 		self.sendPeople(people)
+		self.sendAllData()
 		
 
 	def onMessage(self, payload, isBinary):
@@ -405,7 +406,17 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			"cameraIP": cameraIP
 		}
 		self.sendMessage(json.dumps(msg))
-		
+	
+	def sendAllData(self):
+		y = []
+		keys = r.keys('*')
+		for hash in keys:
+			face = getI(hash)
+			face["phash"] = hash
+			del face["rep"]
+			y.append(face)
+		self.sendMessage(json.dumps(y))
+	
 	def sendPeople(self, people):
 		msg = {
 			"type": "PEOPLE",
