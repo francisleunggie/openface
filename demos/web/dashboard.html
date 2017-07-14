@@ -334,13 +334,24 @@
     <script type="text/javascript" src="assets/js/plugins/jqplot.categoryAxisRenderer.js"></script>
     <script type="text/javascript" src="assets/js/jqplot.pointLabels.js"></script>
     <script type="text/javascript" src="assets/js/plugins/jqplot.bubbleRenderer.js"></script>
-      <script src="assets/js/chartLouis.js"></script>
 	<!--  Charts Plugin -->
 <!-- 	<script src="assets/js/chartist.min.js"></script>
  -->
     <!--  Notifications Plugin    -->
     <script src="assets/js/bootstrap-notify.js"></script>
 	<script>
+		var ddebug = 1;
+		var dataImported;
+		var tabUniqueVisitor;
+		var metadata;
+		var data_starttimeXnum;
+		var data_starttimeXcameraIPXnum;
+		var data_engagementFreq;
+		const engagement_threshold = 30;
+		const dateFormat = "HH:mm";
+		const timeStep_starttimeXnum = 5;
+		const timeStep_starttimeXcameraIPXnum = 60;
+		const timeStep_engagement = 60;
 		function refreshDataCommon() {
 			let superData = starttimeXnum(metadata.min, metadata.visitors);
 			data_starttimeXnum = superData.timeBucketsCount;
@@ -352,6 +363,7 @@
 			heatmap2();
 		}
 	</script>
+      <script src="assets/js/chartLouis.js"></script>
     <script src="assets/js/dashboard.js" type="text/javascript"></script>
     <script src="assets/js/chartLouis.js"></script>
 

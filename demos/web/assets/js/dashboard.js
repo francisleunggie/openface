@@ -1,15 +1,4 @@
-var ddebug = 1;
-var dataImported;
-var tabUniqueVisitor;
-var metadata;
-var data_starttimeXnum;
-var data_starttimeXcameraIPXnum;
-var data_engagementFreq;
-const engagement_threshold = 30;
-const dateFormat = "HH:mm";
-const timeStep_starttimeXnum = 5;
-const timeStep_starttimeXcameraIPXnum = 60;
-const timeStep_engagement = 60;
+
 
 function createSocket(address, name) {
 	socket = new WebSocket(address);
