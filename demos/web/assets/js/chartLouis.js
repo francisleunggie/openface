@@ -1,6 +1,6 @@
 var tableGraph = data_starttimeXnum;
 // document.getElementById("infoNumber").value=j.length;
-document.getElementById("infoNumber").innerHTML="Number of unique visitor : "+j.people.length;
+document.getElementById("infoNumber").innerHTML="Number of unique visitor : "+tabUniqueVisitor.length;
 
 // function loadHeatMap()
 // {
