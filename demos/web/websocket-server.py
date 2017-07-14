@@ -191,7 +191,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		self.training = True
 		self.register(request.peer)
 		#self.cameraIP = str(request.peer)
-		
+
 	def register(self, client):
 		if client not in clients:
 			print("registered client {}".format(client))
@@ -201,7 +201,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		if client in clients:
 			print("unregistered client {}".format(client.peer))
 			clients.remove(client)	
-			
+
 	 def broadcast(self, msg):
 		print("broadcasting message '{}' ..".format(msg))
 		for c in self.clients:
