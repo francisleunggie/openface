@@ -190,6 +190,7 @@ function starttimeXcameraIPXnum(min, cameraIPs, visitors) {
 	curr = 0;
 	if (ddebug >= 3) console.log("timeSteps=", timeSteps);
 	cameraIPs.forEach( (y) => {
+		engagement[y] = {};
 		visitors.forEach( (x) => { engagement[y][x] = []; } );
 	});
 	dataImported.forEach((x) => {
