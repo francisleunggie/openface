@@ -2,6 +2,7 @@ var dataImported;
 var tabUniqueVisitor;
 var minmax;
 var data_starttimeXnum;
+const dateFormat = "HH:mm";
 const timeStep_starttimeXnum = 5;
 const timeStep_starttimeXcameraIPXnum = 60;
 
@@ -124,10 +125,10 @@ function starttimeXnum(min) {
 	});
 	timeSteps.forEach((x) => {
 		let count = timeBuckets[x] ? timeBuckets[x].length : 0;
-		timeBucketsCount.push({
-			starttime: x,
-			num: 0
-		});
+		timeBucketsCount.push([
+			x.toString(dateFormat),
+			0
+		]);
 	});
 	console.log("starttimeXnum, timeSteps", JSON.stringify(timeSteps));
 	console.log("starttimeXnum, timeBuckets", JSON.stringify(timeBuckets));
