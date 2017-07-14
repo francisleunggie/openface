@@ -189,7 +189,6 @@ function starttimeXnum(min, visitors) {
 	return {timeBucketsCount, engagementFreq};
 }
 
-
 function starttimeXcameraIPXnum(min, cameraIPs) {
 	// normalize the data to time steps
 	let timeStep = timeStep_starttimeXcameraIPXnum,
