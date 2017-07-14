@@ -351,7 +351,18 @@
 
 	<!-- Light Bootstrap Table DEMO methods, don't include it in your project! -->
 	<script src="assets/js/demo.js"></script>
-
+	<script>
+		function refreshDataCommon() {
+			let superData = starttimeXnum(metadata.min, metadata.visitors);
+			data_starttimeXnum = superData.timeBucketsCount;
+			data_engagementFreq = superData.engagementFreq;
+			data_starttimeXcameraIPXnum = starttimeXcameraIPXnum(metadata.min, metadata.cameraIPs);
+			linearGraphD();
+			bubbleGraphChart();
+			barChartAverage();
+			heatmap2();
+		}
+	</script>
 	<script type="text/javascript">
     	$(document).ready(function(){
            linearGraphD();
