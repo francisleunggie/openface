@@ -60,10 +60,10 @@ function createSocket(address, name) {
 				}
 				 */
 				dataImported.push(j.data);
-				if (metadata.cameraIPs.indexOf(j.data.cameraIP) === -1) 
-					metadata.cameraIPs.push(j.data.cameraIP);
-				if (metadata.visitors.indexOf(j.data.name) === -1) 
-					metadata.visitors.push(j.data.name);
+				if (metadata.cameraIPs.indexOf(j.cameraIP) === -1) 
+					metadata.cameraIPs.push(j.cameraIP);
+				if (metadata.visitors.indexOf(j.name) === -1) 
+					metadata.visitors.push(j.name);
 				refreshDataCommon();
 			} else {
 				if (ddebug >= 3) console.log("Unrecognized message type: " + j.type);
