@@ -5,7 +5,7 @@ var metadata;
 var data_starttimeXnum;
 var data_starttimeXcameraIPXnum;
 var data_engagementFreq;
-const engagement_threshold = 60;
+const engagement_threshold = 30;
 const dateFormat = "HH:mm";
 const timeStep_starttimeXnum = 5;
 const timeStep_starttimeXcameraIPXnum = 60;
