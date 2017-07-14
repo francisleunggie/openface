@@ -1,3 +1,4 @@
+var ddebug = 1;
 var dataImported;
 var tabUniqueVisitor;
 var minmaxCameraIP;
@@ -23,15 +24,15 @@ function createSocket(address, name) {
 		sentTimes.push(new Date());
 	}
 	socket.onmessage = function (e) {
-		console.log(e);
+		if (ddebug >= 3) console.log(e);
 		j = JSON.parse(e.data)
 			if (j.type == "PEOPLE") {
 				tabUniqueVisitor = j.people;
-				console.log("le truc a choper");
-				console.log(j);
+				if (ddebug >= 3) console.log("le truc a choper");
+				if (ddebug >= 3) console.log(j);
 				// setPeople(j);
 			} else if (j.type == "ALL_DATA") {
-				console.log("all data", JSON.stringify(j));
+				if (ddebug >= 3) console.log("all data", JSON.stringify(j));
 				/*
 				j = {"type":'ALL_DATA',"data": data[object]}
 				where
@@ -46,7 +47,7 @@ function createSocket(address, name) {
 				minmaxCameraIP = processTimeInfo();
 				refreshDataCommon();
 			} else if (j.type == "NEW_IMAGE") {
-				console.log(j);
+				if (ddebug >= 3) console.log(j);
 				dataImported.push(j);
 				/*{
 				name,
@@ -60,12 +61,12 @@ function createSocket(address, name) {
 					minmaxCameraIP.cameraIPs.push(j.data.cameraIP);
 				refreshDataCommon();
 			} else {
-				console.log("Unrecognized message type: " + j.type);
+				if (ddebug >= 3) console.log("Unrecognized message type: " + j.type);
 			}
 	}
 	socket.onerror = function (e) {
-		console.log("Error creating WebSocket connection to " + address);
-		console.log(e);
+		if (ddebug >= 3) console.log("Error creating WebSocket connection to " + address);
+		if (ddebug >= 3) console.log(e);
 	}
 	socket.onclose = function (e) {}
 }
@@ -98,8 +99,8 @@ function processTimeInfo() {
 			cameraIPs.push(x.cameraIP);
 	});
 	dataImported.sort(sortDataByTime);
-	console.log("min =", min, "max =", max);
-	//console.log("sorted data:", JSON.stringify(dataImported));
+	if (ddebug >= 3) console.log("min =", min, "max =", max);
+	//if (ddebug >= 3) console.log("sorted data:", JSON.stringify(dataImported));
 	return {
 		min,
 		max,
@@ -115,9 +116,9 @@ function starttimeXnum(min) {
 	timeBuckets = {},
 	timeBucketsCount = [],
 	curr = 0;
-	console.log("timeSteps=", timeSteps);
+	if (ddebug >= 3) console.log("timeSteps=", timeSteps);
 	dataImported.forEach((x) => {
-		console.log("x.time =", x.time, "timeSteps[" + curr + "] =", timeSteps[curr], "timeSteps[" + (curr + 1) + "] =", timeSteps[curr + 1]);
+		if (ddebug >= 3) console.log("x.time =", x.time, "timeSteps[" + curr + "] =", timeSteps[curr], "timeSteps[" + (curr + 1) + "] =", timeSteps[curr + 1]);
 		// supposed to be a sure hit
 		if (x.time >= timeSteps[curr] && x.time < timeSteps[curr + 1]) {
 			if (!timeBuckets[timeSteps[curr]])
@@ -142,9 +143,9 @@ function starttimeXnum(min) {
 			count
 		]);
 	});
-	console.log("starttimeXnum, timeSteps", JSON.stringify(timeSteps));
-	console.log("starttimeXnum, timeBuckets", JSON.stringify(timeBuckets));
-	console.log("starttimeXnum, timeBucketsCount", timeBucketsCount);
+	if (ddebug >= 3) console.log("starttimeXnum, timeSteps", JSON.stringify(timeSteps));
+	if (ddebug >= 3) console.log("starttimeXnum, timeBuckets", JSON.stringify(timeBuckets));
+	if (ddebug >= 3) console.log("starttimeXnum, timeBucketsCount", timeBucketsCount);
 	return timeBucketsCount;
 }
 
@@ -157,9 +158,9 @@ function starttimeXcameraIPXnum(min, cameraIPs) {
 	timeBuckets = {},
 	timeBucketsCount = [],
 	curr = 0;
-	console.log("timeSteps=", timeSteps);
+	if (ddebug >= 3) console.log("timeSteps=", timeSteps);
 	dataImported.forEach((x) => {
-		console.log("x.time =", x.time, "timeSteps[" + curr + "] =", timeSteps[curr], "timeSteps[" + (curr + 1) + "] =", timeSteps[curr + 1]);
+		if (ddebug >= 3) console.log("x.time =", x.time, "timeSteps[" + curr + "] =", timeSteps[curr], "timeSteps[" + (curr + 1) + "] =", timeSteps[curr + 1]);
 		// supposed to be a sure hit
 		if (x.time >= timeSteps[curr] && x.time < timeSteps[curr + 1]) {
 			if (!timeBuckets[timeSteps[curr]]) {
@@ -195,9 +196,9 @@ function starttimeXcameraIPXnum(min, cameraIPs) {
 			]);
 		});
 	});
-	console.log("starttimeXnum, timeSteps", JSON.stringify(timeSteps));
-	console.log("starttimeXnum, timeBuckets", JSON.stringify(timeBuckets));
-	console.log("starttimeXnum, timeBucketsCount", timeBucketsCount);
+	if (ddebug >= 3) console.log("starttimeXnum, timeSteps", JSON.stringify(timeSteps));
+	if (ddebug >= 3) console.log("starttimeXnum, timeBuckets", JSON.stringify(timeBuckets));
+	if (ddebug >= 3) console.log("starttimeXnum, timeBucketsCount", timeBucketsCount);
 	return timeBucketsCount;
 }
 createSocket("wss://" + window.location.hostname + ":9000", "Local");
