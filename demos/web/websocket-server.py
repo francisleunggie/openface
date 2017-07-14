@@ -106,15 +106,20 @@ class Face:
 			self.name,
 			self.cameraIP,
 			datetime.datetime.fromtimestamp(float(self.timestamp)).strftime('%Y-%m-%d %H:%M:%S')
-		)
-		
-	def dump(self):
+		)	
+	
+	def jsonify(self):
 		repJ = self.rep.tolist()
 		j = self.__dict__
 		j["rep"] = repJ
 		j["name"] = j["name"].encode('ascii', 'ignore')
 		j["cameraIP"] = j["cameraIP"].encode('ascii', 'ignore')
 		j["timestamp"] = j["timestamp"].encode('ascii', 'ignore')
+		return j
+		
+	def dump(self):
+		repJ = self.rep.tolist()
+		j = self.jsonify()
 		return json.dumps(j)
 		
 	@classmethod
@@ -415,7 +420,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		keys = r.keys('*')
 		for hash in keys:
 			face = getI(hash)
-			face = face.dump()
+			face = face.jsonify()
 			face["phash"] = hash
 			del face["rep"]
 			y.append(face)
