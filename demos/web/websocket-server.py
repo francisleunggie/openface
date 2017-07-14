@@ -204,10 +204,10 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			
 
 	def broadcast(self, msg):
-		print("broadcasting message '{}' ..".format(msg))
-		for c in self.clients:
+		# print("broadcasting message '{}' ..".format(msg))
+		for c in clients:
 			c.sendMessage(msg)
-			#print("message sent to {}".format(c.peer))
+			print("message sent to {}".format(c.peer))
 
 	def onOpen(self):
 		print("WebSocket connection open.")
