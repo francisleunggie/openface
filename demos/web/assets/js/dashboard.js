@@ -40,7 +40,7 @@ function createSocket(address, name) {
 				 */
 				dataImported = j.data;
 				let minmax = processTimeInfo();
-				starttimeXnum(minmax.min);
+				data_starttimeXnum = starttimeXnum(minmax.min);
 			} else if (j.type == "NEW_IMAGE") {
 				console.log(j);
 				dataImported.push(j);
