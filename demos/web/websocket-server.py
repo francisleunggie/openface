@@ -175,11 +175,11 @@ def getUniqueIdentities():
 	
 
 people = resyncIdentities()	
-
+clients = []
 
 class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def __init__(self):
-		super(OpenFaceServerProtocol, self).__init__()		
+		super(OpenFaceServerProtocol, self).__init__()	
 		self.images = {}
 		self.training = True
 		self.svm = None
@@ -189,9 +189,25 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def onConnect(self, request):
 		print("Client connecting: {0}".format(request.peer))
 		self.training = True
+		self.register(request.peer)
 		#self.cameraIP = str(request.peer)
 		
+	def register(self, client):
+        if client not in clients:
+            print("registered client {}".format(client.peer))
+            clients.append(client)
 
+    def unregister(self, client):
+        if client in clients:
+            print("unregistered client {}".format(client.peer))
+            clients.remove(client)	
+			
+	 def broadcast(self, msg):
+        print("broadcasting message '{}' ..".format(msg))
+        for c in self.clients:
+            c.sendMessage(msg)
+            #print("message sent to {}".format(c.peer))
+	
 	def onOpen(self):
 		print("WebSocket connection open.")
 		self.sendPeople(people)
@@ -260,6 +276,7 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 			print("Warning: Unknown message type: {}".format(msg['type']))
 
 	def onClose(self, wasClean, code, reason):
+		unregister(self)
 		print("WebSocket connection closed: {0}".format(reason))
 
 	def loadState(self, jsImages, training, jsPeople, jscameraIP):
