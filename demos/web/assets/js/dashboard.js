@@ -1,6 +1,7 @@
 var dataImported;
 var tabUniqueVisitor;
 var minmax;
+var data_starttimeXnum;
 const timeStep_starttimeXnum = 5;
 const timeStep_starttimeXcameraIPXnum = 60;
 
