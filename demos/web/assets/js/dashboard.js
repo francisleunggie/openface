@@ -236,15 +236,20 @@ function starttimeXcameraIPXnum(min, cameraIPs, visitors) {
 	});
 	cameraIPs.forEach( (cam) => {
 		visitors.forEach( (vis) => {
-			let earliest = engagement[cam][vis][0].time,
-			latest = engagement[cam][vis][engagement[cam][vis].length-1].time;
-			let diff = Math.max(1, Math.ceil((latest.getTime() - earliest.getTime()) / (1000 * timeStep_engagement)));
-			if (diff > engagement_threshold) {
-				for (let i = 1; i < engagement[cam][vis].length; i++) {
-					let microDiff = Math.max(1, Math.ceil((engagement[cam][vis][i].time.getTime() - engagement[cam][vis][i-1].time.getTime()) / (1000 * timeStep_engagement)));
-					if (microDiff > engagement_threshold) 
-						diff -= microDiff;
+			let diff;
+			if (engagement[cam][vis][0]) {
+				let earliest = engagement[cam][vis][0].time,
+				latest = engagement[cam][vis][engagement[cam][vis].length-1].time;
+				diff = Math.max(1, Math.ceil((latest.getTime() - earliest.getTime()) / (1000 * timeStep_engagement)));
+				if (diff > engagement_threshold) {
+					for (let i = 1; i < engagement[cam][vis].length; i++) {
+						let microDiff = Math.max(1, Math.ceil((engagement[cam][vis][i].time.getTime() - engagement[cam][vis][i-1].time.getTime()) / (1000 * timeStep_engagement)));
+						if (microDiff > engagement_threshold) 
+							diff -= microDiff;
+					}
 				}
+			} else {
+				diff = 0;
 			}
 			engagement[cam][vis] = diff;
 			if (!engagementStrengths[cam][diff]) {
