@@ -190,7 +190,10 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 	def onOpen(self):
 		print("WebSocket connection open.")
 		self.sendPeople(people)
-		#self.sendAllData()
+		try:
+			self.sendAllData()
+		except Exception as e:
+			print "Error: {}".format(str(e))
 		
 
 	def onMessage(self, payload, isBinary):
