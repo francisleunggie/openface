@@ -1,5 +1,6 @@
 var dataImported;
 var tabUniqueVisitor;
+var minmax;
 const timeStep_starttimeXnum = 5;
 const timeStep_starttimeXcameraIPXnum = 60;
 
@@ -39,7 +40,7 @@ function createSocket(address, name) {
 				}
 				 */
 				dataImported = j.data;
-				let minmax = processTimeInfo();
+				minmax = processTimeInfo();
 				data_starttimeXnum = starttimeXnum(minmax.min);
 			} else if (j.type == "NEW_IMAGE") {
 				console.log(j);
@@ -51,7 +52,8 @@ function createSocket(address, name) {
 				timestamp,
 				}
 				 */
-
+				dataImported.push(j.data);
+				data_starttimeXnum = starttimeXnum(minmax.min);
 			} else {
 				console.log("Unrecognized message type: " + j.type);
 			}
@@ -94,7 +96,7 @@ function starttimeXnum(min) {
 	next = (new Date(min)).addMinutes(timeStep),
 	timeSteps = [min, next], 
 	timeBuckets = {}, 
-	timeBucketsCount = {}, 
+	timeBucketsCount = [], 
 	curr = 0;
 	console.log("timeSteps=",timeSteps);
 	dataImported.forEach((x) => {
@@ -116,13 +118,13 @@ function starttimeXnum(min) {
 		}
 		
 	});
-	Object.keys(timeBuckets).forEach((x) => {
-		timeBucketsCount[x] = timeBuckets[x].length;
+	timeSteps.forEach((x) => {
+		timeBucketsCount.push({starttime: x, num: timeBuckets[x].length});
 	});
 	console.log("starttimeXnum, timeSteps", JSON.stringify(timeSteps));
 	console.log("starttimeXnum, timeBuckets", JSON.stringify(timeBuckets));
 	console.log("starttimeXnum, timeBucketsCount", timeBucketsCount);
-	return {timeSteps, timeBuckets, timeBucketsCount};
+	return timeBucketsCount;
 }
 
 /*
