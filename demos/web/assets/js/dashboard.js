@@ -127,7 +127,7 @@ function starttimeXnum(min) {
 		let count = timeBuckets[x] ? timeBuckets[x].length : 0;
 		timeBucketsCount.push([
 			x.toString(dateFormat),
-			0
+			count
 		]);
 	});
 	console.log("starttimeXnum, timeSteps", JSON.stringify(timeSteps));
