@@ -15,7 +15,7 @@ function createSocket(address, name) {
 		// tok = defaultTok;
 		numNulls = 0
 
-		socket.send(JSON.stringify({
+			socket.send(JSON.stringify({
 					'type': 'GET_PEOPLE'
 				}));
 		sentTimes.push(new Date());
@@ -79,7 +79,7 @@ function processTimeInfo() {
 	let min,
 	max;
 	dataImported.forEach((x) => {
-		x.time = new Date(parseFloat(x.timestamp)*1000);
+		x.time = new Date(parseFloat(x.timestamp) * 1000);
 		if (!min || x.time < min)
 			min = x.time;
 		if (!max || x.time > max)
@@ -88,39 +88,46 @@ function processTimeInfo() {
 	dataImported.sort(sortDataByTime);
 	console.log("min =", min, "max =", max);
 	//console.log("sorted data:", JSON.stringify(dataImported));
-	return {min, max}
+	return {
+		min,
+		max
+	}
 }
 
 function starttimeXnum(min) {
 	// normalize the data to time steps
 	let timeStep = timeStep_starttimeXnum,
 	next = (new Date(min)).addMinutes(timeStep),
-	timeSteps = [min, next], 
-	timeBuckets = {}, 
-	timeBucketsCount = [], 
+	timeSteps = [min, next],
+	timeBuckets = {},
+	timeBucketsCount = [],
 	curr = 0;
-	console.log("timeSteps=",timeSteps);
+	console.log("timeSteps=", timeSteps);
 	dataImported.forEach((x) => {
-		console.log("x.time =", x.time, "timeSteps["+curr+"] =", timeSteps[curr], "timeSteps["+(curr+1)+"] =", timeSteps[curr+1]);
+		console.log("x.time =", x.time, "timeSteps[" + curr + "] =", timeSteps[curr], "timeSteps[" + (curr + 1) + "] =", timeSteps[curr + 1]);
 		// supposed to be a sure hit
 		if (x.time >= timeSteps[curr] && x.time < timeSteps[curr + 1]) {
-			if (!timeBuckets[timeSteps[curr]]) 
+			if (!timeBuckets[timeSteps[curr]])
 				timeBuckets[timeSteps[curr]] = [];
-			if (timeBuckets[timeSteps[curr]].indexOf(x.name) === -1) 
+			if (timeBuckets[timeSteps[curr]].indexOf(x.name) === -1)
 				timeBuckets[timeSteps[curr]].push(x.name);
-		} 
+		}
 		// skip all intervals that has no data
 		while (x.time > timeSteps[curr + 1]) {
-			if (!timeBuckets[timeSteps[curr + 1]]) 
+			if (!timeBuckets[timeSteps[curr + 1]])
 				timeBuckets[timeSteps[curr + 1]] = [];
 			curr += 1;
 			next = (new Date(timeSteps[curr])).addMinutes(timeStep);
 			timeSteps[curr + 1] = next;
 		}
-		
+
 	});
 	timeSteps.forEach((x) => {
-		timeBucketsCount.push({starttime: x, num: timeBuckets[x].length});
+		let count = timeBuckets[x] ? timeBuckets[x].length : 0;
+		timeBucketsCount.push({
+			starttime: x,
+			num: 0
+		});
 	});
 	console.log("starttimeXnum, timeSteps", JSON.stringify(timeSteps));
 	console.log("starttimeXnum, timeBuckets", JSON.stringify(timeBuckets));
