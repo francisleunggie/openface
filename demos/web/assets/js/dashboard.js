@@ -20,6 +20,7 @@ function createSocket(address, name) {
 		j = JSON.parse(e.data)
 			if (j.type == "PEOPLE") {
 				tabUniqueVisitor = j.people;
+				document.getElementById("infoNumber").innerHTML="Number of unique visitor : "+tabUniqueVisitor.length;
 				if (ddebug >= 3) console.log("le truc a choper");
 				if (ddebug >= 3) console.log(j);
 				// setPeople(j);
