@@ -347,6 +347,7 @@
 		var data_starttimeXnum;
 		var data_starttimeXcameraIPXnum;
 		var data_engagementFreq;
+		var data_engagementCamFreq;
 		const engagement_threshold = 30;
 		const dateFormat = "HH:mm";
 		const timeStep_starttimeXnum = 5;
@@ -356,7 +357,9 @@
 			let superData = starttimeXnum(metadata.min, metadata.visitors);
 			data_starttimeXnum = superData.timeBucketsCount;
 			data_engagementFreq = superData.engagementFreq;
-			data_starttimeXcameraIPXnum = starttimeXcameraIPXnum(metadata.min, metadata.cameraIPs);
+			superdata = starttimeXcameraIPXnum(metadata.min, metadata.cameraIPs, metadata.visitors);
+			data_starttimeXcameraIPXnum = superdata.timeBucketsCount;
+			data_engagementCamFreq = superData.engagementFreq;
 			linearGraphD();
 			bubbleGraphChart();
 			barChartAverage();

@@ -175,15 +175,23 @@ function starttimeXnum(min, visitors) {
 	return {timeBucketsCount, engagementFreq};
 }
 
-function starttimeXcameraIPXnum(min, cameraIPs) {
+function starttimeXcameraIPXnum(min, cameraIPs, visitors) {
 	// normalize the data to time steps
 	let timeStep = timeStep_starttimeXcameraIPXnum,
 	next = (new Date(min)).addMinutes(timeStep),
 	timeSteps = [min, next],
 	timeBuckets = {},
 	timeBucketsCount = [],
+	engagement = {},
+	engagementRaw = {},
+	engagementStrengthArrs = {},
+	engagementStrengths = {},
+	engagementFreq = [],
 	curr = 0;
 	if (ddebug >= 3) console.log("timeSteps=", timeSteps);
+	cameraIPs.forEach( (y) => {
+		visitors.forEach( (x) => { engagement[y][x] = []; } );
+	});
 	dataImported.forEach((x) => {
 		if (ddebug >= 3) console.log("x.time =", x.time, "timeSteps[" + curr + "] =", timeSteps[curr], "timeSteps[" + (curr + 1) + "] =", timeSteps[curr + 1]);
 		// supposed to be a sure hit
@@ -209,7 +217,7 @@ function starttimeXcameraIPXnum(min, cameraIPs) {
 			next = (new Date(timeSteps[curr])).addMinutes(timeStep);
 			timeSteps[curr + 1] = next;
 		}
-
+		engagement[x.cameraIP][x.name].push(x);
 	});
 	timeSteps.forEach((x) => {
 		cameraIPs.forEach( (y) => {
@@ -221,10 +229,43 @@ function starttimeXcameraIPXnum(min, cameraIPs) {
 			]);
 		});
 	});
+	cameraIPs.forEach( (y) => {
+		engagementStrengths[y] = {};
+		engagementStrengthArrs[y] = [];
+	});
+	cameraIPs.forEach( (cam) => {
+		visitors.forEach( (vis) => {
+			let earliest = engagement[cam][vis][0].time,
+			latest = engagement[cam][vis][engagement[cam][vis].length-1].time;
+			let diff = Math.max(1, Math.ceil((latest.getTime() - earliest.getTime()) / (1000 * timeStep_engagement)));
+			if (diff > engagement_threshold) {
+				for (let i = 1; i < engagement[cam][vis].length; i++) {
+					let microDiff = Math.max(1, Math.ceil((engagement[cam][vis][i].time.getTime() - engagement[cam][vis][i-1].time.getTime()) / (1000 * timeStep_engagement)));
+					if (microDiff > engagement_threshold) 
+						diff -= microDiff;
+				}
+			}
+			engagement[cam][vis] = diff;
+			if (!engagementStrengths[cam][diff]) {
+				engagementStrengths[cam][diff] = 0;
+				engagementStrengthArrs[cam].push(diff);
+			}
+			engagementStrengths[cam][diff] += 1;
+		});
+	});
+	cameraIPs.forEach( (x) => {
+		engagementStrengthArrs[x].sort(function(a, b){return a-b});
+	});
+	cameraIPs.forEach( (cam) => {
+		engagementStrengthArrs[cam].forEach( (strength) => {
+			engagementFreq.push([strength, cam, engagementStrengths[cam][strength]]);
+		});
+	});
 	if (ddebug >= 3) console.log("starttimeXnum, timeSteps", JSON.stringify(timeSteps));
 	if (ddebug >= 3) console.log("starttimeXnum, timeBuckets", JSON.stringify(timeBuckets));
 	if (ddebug >= 3) console.log("starttimeXnum, timeBucketsCount", timeBucketsCount);
-	return timeBucketsCount;
+	if (ddebug >= 1) console.log("starttimeXnum, engagementFreq", engagementFreq);
+	return {timeBucketsCount, engagementFreq};
 }
 
 /*
