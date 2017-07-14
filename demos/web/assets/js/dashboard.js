@@ -86,16 +86,7 @@ function sortDataByTime(a, b) {
 	return 0;
 }
 
-function refreshDataCommon() {
-	let superData = starttimeXnum(metadata.min, metadata.visitors);
-	data_starttimeXnum = superData.timeBucketsCount;
-	data_engagementFreq = superData.engagementFreq;
-	data_starttimeXcameraIPXnum = starttimeXcameraIPXnum(metadata.min, metadata.cameraIPs);
-	linearGraphD();
-	bubbleGraphChart();
-	barChartAverage();
-	heatmap2();
-}
+
 
 function processTimeInfo() {
 	let min,
