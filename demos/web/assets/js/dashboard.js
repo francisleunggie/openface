@@ -60,7 +60,7 @@ function createSocket(address, name) {
 				}
 				 */
 				j.time = new Date(parseFloat(j.timestamp) * 1000);
-				dataImported.push(j.data);
+				dataImported.push(j);
 				if (metadata.cameraIPs.indexOf(j.cameraIP) === -1) 
 					metadata.cameraIPs.push(j.cameraIP);
 				if (metadata.visitors.indexOf(j.name) === -1) 
