@@ -415,8 +415,9 @@ class OpenFaceServerProtocol(WebSocketServerProtocol):
 		keys = r.keys('*')
 		for hash in keys:
 			face = getI(hash)
-			#face["phash"] = hash
-			#del face["rep"]
+			face = face.dump()
+			face["phash"] = hash
+			del face["rep"]
 			y.append(face)
 		self.sendMessage(json.dumps(y))
 	
