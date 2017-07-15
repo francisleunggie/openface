@@ -1,5 +1,5 @@
 
-const dateFormat = "MMM-dd HH:mm";
+const dateFormat2 = "MMM-dd HH:mm";
 
 function createSocket(address, name) {
 	socket = new WebSocket(address);
@@ -226,7 +226,7 @@ function starttimeXcameraIPXnum(min, cameraIPs, visitors) {
 			let count = timeBuckets[x] && timeBuckets[x][y] ? timeBuckets[x][y].length : 0;
 			timeBucketsCount.push([
 				y,
-				x.toString(dateFormat),
+				x.toString(dateFormat2),
 				count
 			]);
 		});
