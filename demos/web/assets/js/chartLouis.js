@@ -97,7 +97,7 @@ var tableGraph = data_starttimeXnum;
 
 function heatmap2()
 {
-  const url = 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/global-temperature.json',
+  // const url = 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/global-temperature.json',
   months = ['January','February','March','April','May','June','July','August','September','October','November','December'],
   colors = ['#2C7BB6', '#00A6CA','#00CCBC','#90EB9D','#FFFF8C','#F9D057','#F29E2E','#E76818','#D7191C'],
   margin = {top: 100,right: 20,bottom: 100,left: 60},
@@ -139,7 +139,7 @@ chart.append('g')
   .attr('text-anchor','end')
   .text((d) => `${d}`);
 
-d3.json(url, (data) => {
+d3.json(data_starttimeXcameraIPXnu, (data) => {
 
     const date = (year) => new Date(Date.parse(year));
 
@@ -287,9 +287,24 @@ function barChartAverage()
 
 function bubbleGraphChart()
 {
-  var arr = [[11, 123, 1236, "Acura"], [45, 92, 1067, "Alfa Romeo"], 
-    [24, 104, 1176, "AM General"], [50, 23, 610, "Aston Martin Lagonda"], 
-    [18, 17, 539, "Audi"], [7, 89, 864, "BMW"], [2, 13, 1026, "Bugatti"]];
+  var tabData = data_engagementCamFreq;
+  var tabRslt=[];
+  var add;
+  var machin;
+  for(var i=0;i<data_engagementCamFreq.length;i++)
+  {
+    tabRslt[data_engagementCamFreq[i][1]]=0  
+  }
+  console.log(tabRslt);
+  for(var i=0;i<data_engagementCamFreq.length;i++)
+  {
+{
+ tabRslt[data_engagementCamFreq[i][1]]=tabRslt[data_engagementCamFreq[i][1]]+data_engagementCamFreq[i][0];
+}
+  }
+  console.log(tabRslt);
+
+  var arr = [[data_engagementCamFreq[0][0], 25, 20, data_engagementCamFreq[0][1]], [data_engagementCamFreq[1][0], 5, 20, data_engagementCamFreq[1][1]]]
      
     plot1 = $.jqplot('bubbleGraphChart',[arr],{
         title: 'Transparent Bubbles',
