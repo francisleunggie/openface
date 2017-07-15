@@ -143,7 +143,7 @@ function starttimeXnum(min, visitors) {
 	timeSteps.forEach((x) => {
 		let count = timeBuckets[x] ? timeBuckets[x].length : 0;
 		timeBucketsCount.push([
-			x.toString(dateFormat),
+			x.toString(dateFormat2),
 			count
 		]);
 	});
