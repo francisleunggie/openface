@@ -143,7 +143,7 @@ function starttimeXnum(min, visitors) {
 	timeSteps.forEach((x) => {
 		let count = timeBuckets[x] ? timeBuckets[x].length : 0;
 		timeBucketsCount.push([
-			x.toString(dateFormat2),
+			x,//.toString(dateFormat2),
 			count
 		]);
 	});
@@ -226,7 +226,7 @@ function starttimeXcameraIPXnum(min, cameraIPs, visitors) {
 			let count = timeBuckets[x] && timeBuckets[x][y] ? timeBuckets[x][y].length : 0;
 			timeBucketsCount.push([
 				y,
-				x.toString(dateFormat2),
+				x,//.toString(dateFormat2),
 				count
 			]);
 		});

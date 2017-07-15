@@ -97,88 +97,63 @@ var tableGraph = data_starttimeXnum;
 
 function heatmap2()
 {
-  // const url = 'https://raw.githubusercontent.com/FreeCodeCamp/ProjectReferenceData/master/global-temperature.json',
-  months = ['January','February','March','April','May','June','July','August','September','October','November','December'],
-  colors = ['#2C7BB6', '#00A6CA','#00CCBC','#90EB9D','#FFFF8C','#F9D057','#F29E2E','#E76818','#D7191C'],
-  margin = {top: 100,right: 20,bottom: 100,left: 60},
-  width = 1000,
-  height = 400;
+  var tab = data_starttimeXcameraIPXnum;
 
-const tooltip = d3.select('body').append('div')
-  .attr('id', 'tooltip');
+Highcharts.chart('container', {
+    chart: {
+        type: 'heatmap',
+        marginTop: 40,
+        marginBottom: 80,
+        plotBorderWidth: 1
+    },
 
-const x = d3.scaleTime()
-  .range([0, width]);
 
-const y = d3.scaleLinear()
-  .range([height, 0]);
+    title: {
+        text: 'heat map'
+    },
 
-const chart = d3.select('#chart')
-  .attr('width', width + margin.left + margin.right)
-  .attr('height', height + margin.top + margin.bottom)
-  .append('g')
-  .attr('transform', `translate(${margin.left}, ${margin.top})`);
+    xAxis: {
+        categories: ['Alexander', 'Marie', 'Maximilian', 'Sophia', 'Lukas', 'Maria', 'Leon', 'Anna', 'Tim', 'Laura']
+    },
 
-chart.append('text')             
-  .attr('transform', `translate(${width/2},${ -45})`)
-  .attr('id', 'title')
-  .text('Monthly Global Land Surface Temperatures: 1753-2015');
+    yAxis: {
+        categories: ['Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday'],
+        title: null
+    },
 
-chart.append('text')             
-  .attr('transform', `translate(${width/2},${ -20})`)
-  .attr('id', 'description')
-  .text('Temperatures are relative to the Jan 1951 - Dec 1980 estimated average global temperature: 8.66°C ± 0.07');
-  
-chart.append('g')
-  .selectAll('text')
-  .data(months)
-  .enter().append('text')
-  .attr('class','months')
-  .attr('x', (d) => `${-10}`)
-  .attr('y', (d, i) => `${20 + (i * 33.4)}`)
-  .attr('text-anchor','end')
-  .text((d) => `${d}`);
+    colorAxis: {
+        min: 0,
+        minColor: '#FFFFFF',
+        maxColor: Highcharts.getOptions().colors[0]
+    },
 
-d3.json(data_starttimeXcameraIPXnu, (data) => {
+    legend: {
+        align: 'right',
+        layout: 'vertical',
+        margin: 0,
+        verticalAlign: 'top',
+        y: 25,
+        symbolHeight: 280
+    },
 
-    const date = (year) => new Date(Date.parse(year));
+    tooltip: {
+        formatter: function () {
+            return '<b>' + this.series.xAxis.categories[this.point.x] + '</b> sold <br><b>' +
+                this.point.value + '</b> items on <br><b>' + this.series.yAxis.categories[this.point.y] + '</b>';
+        }
+    },
 
-    x.domain([date(data.monthlyVariance[0].year), date(data.monthlyVariance[data.monthlyVariance.length - 1].year)]);
-    y.domain([0,12]);
+    series: [{
+        name: 'Sales per employee',
+        borderWidth: 1,
+        data: [[0, 0, 10], [0, 1, 19], [0, 2, 8], [0, 3, 24], [0, 4, 67], [1, 0, 92], [1, 1, 58], [1, 2, 78], [1, 3, 117], [1, 4, 48], [2, 0, 35], [2, 1, 15], [2, 2, 123], [2, 3, 64], [2, 4, 52], [3, 0, 72], [3, 1, 132], [3, 2, 114], [3, 3, 19], [3, 4, 16], [4, 0, 38], [4, 1, 5], [4, 2, 8], [4, 3, 117], [4, 4, 115], [5, 0, 88], [5, 1, 32], [5, 2, 12], [5, 3, 6], [5, 4, 120], [6, 0, 13], [6, 1, 44], [6, 2, 88], [6, 3, 98], [6, 4, 96], [7, 0, 31], [7, 1, 1], [7, 2, 82], [7, 3, 32], [7, 4, 30], [8, 0, 85], [8, 1, 97], [8, 2, 123], [8, 3, 64], [8, 4, 84], [9, 0, 47], [9, 1, 114], [9, 2, 31], [9, 3, 48], [9, 4, 91]],
+        dataLabels: {
+            enabled: true,
+            color: '#000000'
+        }
+    }]
 
-    const xTicks = x.ticks().concat(new Date(data.monthlyVariance[data.monthlyVariance.length - 1].year, 0));
-  
-    chart.append('g')
-      .attr('transform', `translate(0,${height})`)
-      .call(d3.axisBottom(x).tickValues(xTicks));  
-  
-    const colorScale = d3.scaleQuantize()
-      .domain([d3.min(data.monthlyVariance, (d) => d.variance), d3.max(data.monthlyVariance, (d) => d.variance)])
-      .range(colors);
-  
-    chart.selectAll('.bar')
-      .data(data.monthlyVariance)
-      .enter().append('rect')
-      .attr('class','bar')
-      .attr('x', (d) => x(new Date(d.year, 0)))
-      .attr('width', ((width / data.monthlyVariance.length) + 40) / 12)
-      .attr('y', (d) => y(d.month))
-      .attr('height', height / 12)
-      .attr('fill', (d) => colorScale(d.variance))
-      .on('mouseover', (d) => {
-        tooltip.transition()
-          .duration(100)    
-          .style('opacity', .9);
-        tooltip.text(`${months[months.length - d.month]} ${d.year} ${d.variance.toFixed(3)}°C`)
-          .style('left', `${d3.event.pageX - 55}px`)  
-          .style('top', `${d3.event.pageY - 40}px`);
-      })
-      .on('mouseout', () => {   
-        tooltip.transition()    
-        .duration(400)    
-        .style('opacity', 0); 
-      });
-  });
+});
 
 const gradientScale = d3.scaleLinear()
   .range(colors);
@@ -220,9 +195,21 @@ chart.append('g')
 
 
 function linearGraphD(){
+//if (!data_starttimeXnum) return;
+goog = [["2017-07-15 4:00pm",425.32], ["2017-07-15 5:00pm",424.84], ["2017-07-15 6:00pm",417.23], ["2017-07-15 6:10pm",390]];
+let sanityDate = (new Date()).addYears(-1);
+let minTime = (new Date()).addHours(-12);
+minTime.setMinutes(0);
 
-// goog = [["6/22/2009",425.32], ["6/8/2009",424.84], ["5/26/2009",417.23], ["5/11/2009",390]]
-goog= data_starttimeXnum;
+
+goog = [];
+data_starttimeXnum.forEach( (tuple) => {
+  if (tuple[0] > sanityDate) {
+    goog.push(tuple);
+  }
+});
+//goog= data_starttimeXnum;
+console.log(sanityDate, goog);
 
     var plot1 = $.jqplot('chartdiv', [goog], { 
       
@@ -232,8 +219,17 @@ goog= data_starttimeXnum;
         }], 
         axes: { 
             xaxis: { 
+                labelRenderer: $.jqplot.CanvasAxisLabelRenderer,
+                tickRenderer: $.jqplot.CanvasAxisTickRenderer,
+                tickOptions:{ 
+                  angle: -30,
+                  formatString:'%#d/%#m %R'
+                },
+                
                 renderer:$.jqplot.DateAxisRenderer,
-                tickRenderer: $.jqplot.axisTickRenderer
+                tickInterval:'1 hour',
+                min: minTime.toString("d/M HH:mm")
+
             }, 
             yaxis: {  
 
@@ -244,7 +240,7 @@ goog= data_starttimeXnum;
             show: true, 
             zoom: true
         } 
-    });
+    }).replot();
 
 }
 
@@ -275,7 +271,7 @@ function barChartAverage()
                 }
             },
             highlighter: { show: false }
-        });
+        }).replot();
      
         $('#chart1').bind('jqplotDataClick', 
             function (ev, seriesIndex, pointIndex, data) {
@@ -287,27 +283,38 @@ function barChartAverage()
 
 function bubbleGraphChart()
 {
+  //if (!data_engagementCamFreq) return;
   var tabData = data_engagementCamFreq;
   var tabRslt=[];
   var add;
   var machin;
-  for(var i=0;i<data_engagementCamFreq.length;i++)
-  {
-    tabRslt[data_engagementCamFreq[i][1]]=0  
-  }
-  console.log(tabRslt);
-  for(var i=0;i<data_engagementCamFreq.length;i++)
-  {
-{
- tabRslt[data_engagementCamFreq[i][1]]=tabRslt[data_engagementCamFreq[i][1]]+data_engagementCamFreq[i][0];
-}
-  }
-  console.log(tabRslt);
-
-  var arr = [[data_engagementCamFreq[0][0], 25, 20, data_engagementCamFreq[0][1]], [data_engagementCamFreq[1][0], 5, 20, data_engagementCamFreq[1][1]]]
-     
-    plot1 = $.jqplot('bubbleGraphChart',[arr],{
-        title: 'Transparent Bubbles',
+    let display = [], groupByCam = {};
+     // end goal = [{ variance, total unique view, avg strength = total Strength / total unique view, label}]
+     tabData.forEach( (eng) => {
+        let strength = eng[0], cam = eng[1], freq = eng[2];
+        // x, y, size, label
+        if (!groupByCam[cam]) {
+          // total strength = freq x strength, total unique visitors, min strength, max strength
+          groupByCam[cam] = { totStren: 0, totUniq: 0, minStren: 0, maxStren: 0};
+        }
+        groupByCam[cam].totStren += freq * strength;
+        if (strength > 0) groupByCam[cam].totUniq += freq;
+        if (strength < groupByCam[cam].minStren) 
+          groupByCam[cam].minStren = strength; 
+        if (strength > groupByCam[cam].maxStren) 
+          groupByCam[cam].maxStren = strength;
+     });
+     Object.keys(groupByCam).forEach( (cam) => {
+        let stats = groupByCam[cam];
+        let variance = stats.maxStren - stats.minStren;
+        let avgStren = stats.totUniq > 0 ? stats.totStren / stats.totUniq:0;
+        let output = [variance, stats.totUniq, avgStren, cam];
+        display.push(output);
+        console.log(output);
+     });
+     $("bubbleGraphChart").html('');
+    plot1 = $.jqplot('bubbleGraphChart',[display],{
+        title: 'Engagement Strength Per Exhibit',
         seriesDefaults:{
             renderer: $.jqplot.BubbleRenderer,
             rendererOptions: {
@@ -316,8 +323,19 @@ function bubbleGraphChart()
             },
             shadow: true,
             shadowAlpha: 0.05
+        },
+        axes:{
+          xaxis:{
+            label:'Strength variance',
+            labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+          },
+          yaxis:{
+            label:'Total Unique Views',
+            labelRenderer: $.jqplot.CanvasAxisLabelRenderer
+          }
         }
-    });    
+
+    }).replot();    
 }
 
 
