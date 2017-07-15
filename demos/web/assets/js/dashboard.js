@@ -264,7 +264,7 @@ function starttimeXcameraIPXnum(min, cameraIPs, visitors) {
 	});
 	cameraIPs.forEach( (cam) => {
 		engagementStrengthArrs[cam].forEach( (strength) => {
-			engagementFreq.push(Math.max(0, [Math.log(strength)), cam, engagementStrengths[cam][strength]]);
+			engagementFreq.push([Math.max(0, Math.log(strength)), cam, engagementStrengths[cam][strength]]);
 		});
 	});
 	if (ddebug >= 3) console.log("starttimeXnum, timeSteps", JSON.stringify(timeSteps));
