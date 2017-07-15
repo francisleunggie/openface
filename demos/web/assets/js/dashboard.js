@@ -1,4 +1,5 @@
 
+const dateFormat = "MMM-dd HH:mm";
 
 function createSocket(address, name) {
 	socket = new WebSocket(address);
